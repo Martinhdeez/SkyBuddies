@@ -1,0 +1,17 @@
+# get all available just commands
+help:
+    just --list
+
+# generate a virtual env based on your host python binary
+generate-venv:
+    python3 -m venv .venv && \
+    source .venv/bin/activate && \
+    pip install -r requirements.txt
+
+# spin up docker compose services
+run-backend:
+    docker compose -f docker-compose.yaml up -d
+
+# shutdown docker compose services
+stop-backend:
+    docker compose -f docker-compose.yaml down --remove-orphans --volumes

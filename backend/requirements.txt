@@ -1,0 +1,13 @@
+fastapi==0.115.8
+fastapi-cli==0.0.7
+pydantic==2.10.6
+pydantic[email]==2.10.6
+pyjwt==2.10.1
+passlib[bcrypt]==1.7.4
+python-jose[cryptography]==3.4.0
+python-multipart==0.0.20
+pymongo==4.11.2
+uvicorn==0.34.0
+motor==3.7.0
+gunicorn==23.0.0
+

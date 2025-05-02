@@ -1,0 +1,17 @@
+services:
+  backend:
+    container_name: hogaris_backend_python_3.12
+    restart: always
+    build:
+      context: .
+      dockerfile: .docker/backend/local/Dockerfile
+      args:
+        PYTHON_VERSION: "3.12-slim-bullseye"
+        PORT: 8000
+    volumes:
+      - ./:/opt/backend
+      - ./.docker/backend/.env.docker:/opt/backend/.env
+    ports:
+      - "8000:8000"
+
+  
