@@ -1,7 +1,7 @@
 from pydantic import EmailStr
 from db.models.user import User
 from db.repositories import Repository
-from db.client import users_collection, properties_collection
+from db.client import users_collection
 from helpers.dict2model import convert_user_to_model
 from typing import List
 from datetime import datetime
