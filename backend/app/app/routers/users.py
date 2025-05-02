@@ -3,8 +3,6 @@ from services.user_service import UserService
 from db.models.user import User
 from routers.dto.user_dto import UserDTO
 
-
-
 router = APIRouter(
     prefix="/users",
     tags=["users"],
