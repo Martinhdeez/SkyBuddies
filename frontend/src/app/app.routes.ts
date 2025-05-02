@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import {IndexComponent} from './features/index/index.component';
 
 /*
   UNCOMMENT THIS LINE FOR CHECK IF THE RAILWAY IS WORKING BUT IT'S COMMENTED FOR NOT CONSUMING THE RAILWAY API
@@ -13,7 +14,7 @@ export const routes: Routes = [
    * -->  { path: 'index', component: IndexComponent, canActivate: [RailwayCheckGuard] },
    */
 
-  //{ path: 'index', component: IndexComponent },
+  { path: 'index', component: IndexComponent },
 
   // IT'S OBLIGATORY TO HAVE THIS LINE AT THE END OF THE ROUTES BECAUSE IT REDIRECTS
   // TO THE INDEX PAGE IF THE URL IS NOT FOUND
