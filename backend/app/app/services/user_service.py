@@ -9,7 +9,7 @@ class UserService:
         self.user_repository = UserRepository()
 
     async def add_user(self, user : User):
-        from services.autentication_service import get_password_hash
+        from app.services.autentication_service import get_password_hash
         user.password = get_password_hash(user.password)
         return await self.user_repository.add_data(user)
 

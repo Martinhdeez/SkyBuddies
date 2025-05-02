@@ -51,7 +51,7 @@ async def login(
     # Generar un token de acceso con expiración
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"id": user.id ,"sub": user.username, "role": user.role.value},
+        data={"id": user.id ,"sub": user.username},
         expires_delta=access_token_expires
     )
     return Token(access_token=access_token, token_type="bearer")
