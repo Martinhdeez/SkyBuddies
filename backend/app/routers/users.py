@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status
-from app.services.user_service import UserService
-from app.db.models.user import User
-from app.routers.dto.user_dto import RegisterUserDTO
+from services.user_service import UserService
+from db.models.user import User
+from routers.dto.user_dto import RegisterUserDTO
 
 router = APIRouter(
     prefix="/users",

@@ -1,7 +1,7 @@
 from pydantic import EmailStr
-from app.db.models.user import User
-from app.db.repositories.repository import Repository
-from app.db.repositories.user_repository import UserRepository
+from db.models.user import User
+from db.repositories.repository import Repository
+from db.repositories.user_repository import UserRepository
 from datetime import datetime, timedelta
 
 class UserService:
@@ -42,7 +42,7 @@ class UserService:
         return await self.user_repository.get_user_by_reset_token(token)
 
     async def update_user_password(self, uid: str, new_password: str): 
-        from services.autentication_service import get_password_hash
+        from app.services.autentication_service import get_password_hash
         hashed_passwd = get_password_hash(new_password) 
         return await self.user_repository.update_data(uid, {"password": hashed_passwd})
 

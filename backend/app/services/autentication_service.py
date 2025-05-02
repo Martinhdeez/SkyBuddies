@@ -5,9 +5,9 @@ from fastapi.security import OAuth2PasswordBearer
 from jwt import PyJWTError as JWTError
 from passlib.context import CryptContext
 from pydantic import EmailStr
-from app.db.models.user import User
+from db.models.user import User
 from typing import Annotated
-from app.services.user_service import UserService
+from services.user_service import UserService
 import jwt
 import os
 

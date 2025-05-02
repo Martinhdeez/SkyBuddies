@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, status, Depends
-from app.routers.dto.user_dto import RegisterUserDTO, LoginUserDTO, ForgotPasswordDTO, ResetPasswordDTO
-from app.db.models.token import Token
-from app.services.autentication_service import *
-from app.db.smtp_server.functions import send_reset_email
+from routers.dto.user_dto import RegisterUserDTO, LoginUserDTO, ForgotPasswordDTO, ResetPasswordDTO
+from db.models.token import Token
+from services.autentication_service import *
+from db.smtp_server.functions import send_reset_email
 from datetime import timedelta
 from jose import JWTError, jwt
 import uuid

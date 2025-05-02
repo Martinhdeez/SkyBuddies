@@ -1,8 +1,8 @@
 from pydantic import EmailStr
-from app.db.models.user import User
-from app.db.repositories.repository import Repository
-from app.db.client import users_collection
-from app.helpers.dict2model import convert_user_to_model
+from db.models.user import User
+from db.repositories.repository import Repository
+from db.client import users_collection
+from helpers.dict2model import convert_user_to_model
 from typing import List
 from datetime import datetime
 
