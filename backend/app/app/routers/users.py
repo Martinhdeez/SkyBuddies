@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status
-from services.user_service import UserService
-from db.models.user import User
-from routers.dto.user_dto import UserDTO
+from app.services.user_service import UserService
+from app.db.models.user import User
+from app.routers.dto.user_dto import RegisterUserDTO
 
 router = APIRouter(
     prefix="/users",
@@ -24,7 +24,7 @@ async def get_user(user_id: str):
 
 @router.post("", response_model=User, status_code=201)
 async def create_user(
-    user_dto: UserDTO
+    user_dto: RegisterUserDTO
 ):
     # Verificar si el username ya está en uso por otro usuario
     if await user_service.get_user_by_username(user_dto.username):
@@ -48,7 +48,7 @@ async def create_user(
 
 @router.put("/{user_id}", response_model=User)
 async def update_user(
-    user_dto: UserDTO,
+    user_dto: RegisterUserDTO,
     user_id: str
 ):
     existing_user = await user_service.get_user_by_id(user_id)

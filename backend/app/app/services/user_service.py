@@ -1,7 +1,7 @@
 from pydantic import EmailStr
-from db.models.user import User
-from db.repositories import Repository
-from db.repositories.user_repository import UserRepository
+from app.db.models.user import User
+from app.db.repositories.repository import Repository
+from app.db.repositories.user_repository import UserRepository
 from datetime import datetime, timedelta
 
 class UserService:

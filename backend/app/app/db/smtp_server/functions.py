@@ -1,6 +1,6 @@
 import smtplib
 from email.message import EmailMessage
-from db.smtp_server.config import configure_smtp  
+from app.db.smtp_server.config import configure_smtp  
 
 async def send_reset_email(email: str, token: str):
     smtp_config = configure_smtp() 

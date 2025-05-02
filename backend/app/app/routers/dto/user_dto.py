@@ -1,6 +1,5 @@
 from typing import Optional, Text
 from pydantic import BaseModel, EmailStr, Field
-from db.models.user import UserRole
 
 class RegisterUserDTO(BaseModel):
     username: Text
