@@ -50,7 +50,7 @@ async def create_user(
 
 @router.put("/{user_id}", response_model=User)
 async def update_user(
-    user_dto: AdminUserDTO,
+    user_dto: UserDTO,
     user_id: str
 ):
     existing_user = await user_service.get_user_by_id(user_id)
