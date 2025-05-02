@@ -11,4 +11,4 @@ DATABASE_NAME = os.getenv("DATABASE_NAME")
 client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URI)
 database = client[DATABASE_NAME]
 
-
+users_collection = database["users"]

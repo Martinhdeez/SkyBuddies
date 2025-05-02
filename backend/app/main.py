@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from starlette.responses import JSONResponse
+from app.routers import auth, users
 
 app = FastAPI()
 
@@ -14,3 +15,5 @@ async def healthz():
         status_code=200,
     )
 
+app.include_router(auth.router) 
+app.include_router(users.router)

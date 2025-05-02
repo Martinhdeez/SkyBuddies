@@ -1,7 +1,7 @@
 from pydantic import EmailStr
-from app.app.db.models.user import User
-from app.app.db.repositories import Repository
-from db.repository.user_repository import UserRepository
+from app.db.models.user import User
+from app.db.repositories.repository import Repository
+from app.db.repositories.user_repository import UserRepository
 from datetime import datetime, timedelta
 
 class UserService:
@@ -9,7 +9,7 @@ class UserService:
         self.user_repository = UserRepository()
 
     async def add_user(self, user : User):
-        from services.autentication_service import get_password_hash
+        from app.services.autentication_service import get_password_hash
         user.password = get_password_hash(user.password)
         return await self.user_repository.add_data(user)
 
