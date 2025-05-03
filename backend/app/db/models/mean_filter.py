@@ -60,7 +60,7 @@ class Weather(BaseModel):
     stormy: Optional[int] = Field(default=0, title="stormy")
     foggy: Optional[int] = Field(default=0, title="foggy")
     cloudy: Optional[int] = Field(default=0, title="cloudy")
-    stormy: Optional[int] = Field(default=0, title="stormy")
+
     
     def increase_weather_counter(self, weather_type: str):
         if weather_type == "sunny":
@@ -91,6 +91,7 @@ class Activities(BaseModel):
     walking: Optional[int] = Field(default=0, title="walking")
     museums: Optional[int] = Field(default=0, title="museums")
     discos: Optional[int] = Field(default=0, title="discos")
+    
     
     def increase_activities_counter(self, activity_type: str):
         if activity_type == "hiking":
@@ -199,7 +200,24 @@ class MeanFilter(BaseModel):
     events: Optional[Events] = Field(default=Events(), title="events")
     continents: Optional[Continents] = Field(default=Continents(), title="continents")
     entorno: Optional[Entorno] = Field(default=Entorno(), title="entorno")
-
+    low_cost: Optional[int] = Field(default=0, title="low_cost")
+    no_low_cost: Optional[int] = Field(default=0, title="no_low_cost")
+    eco_travel: Optional[int] = Field(default=0, title="eco_travel")
+    no_eco_travel: Optional[int] = Field(default=0, title="no_eco_travel")
+    
+    
+    def increase_low_cost_counter(self):
+            self.low_cost += 1
+            
+    def increase_no_low_cost_counter(self):
+            self.no_low_cost += 1
+    
+    def increase_eco_travel_counter(self):
+            self.eco_travel += 1
+            
+    def increase_no_eco_travel_counter(self):
+            self.no_eco_travel += 1
+       
     
     def to_travel_filter(self) -> TravelFilter:
         popular_climate = self.__calculate_climate_max()
@@ -209,6 +227,7 @@ class MeanFilter(BaseModel):
         popular_events = self.__calculate_events_max()
         popular_continents = self.__calculate_continents_max()
         popular_entorno = self.__calculate_entorno_max()
+   
         
         travel_filter = TravelFilter(user_id="")
 
@@ -218,6 +237,10 @@ class MeanFilter(BaseModel):
         print(f"Popular Activities: {popular_activities}")
         print(f"Popular Continents: {popular_continents}")
         print(f"Popular Entorno: {popular_entorno}")
+        
+        travel_filter.low_cost = (self.low_cost >= self.no_low_cost)
+        travel_filter.eco_travel = (self.eco_travel >= self.no_eco_travel)
+        
         
         if popular_climate == "warm":
             travel_filter.climate.warm = True
@@ -384,8 +407,6 @@ class MeanFilter(BaseModel):
                 max_value = v
                 popular = entorno
         return popular
-    
-
     
 
     

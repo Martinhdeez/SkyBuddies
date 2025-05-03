@@ -60,7 +60,17 @@ def most_popular_filters(travel_filters: List[TravelFilter]) -> MeanFilter:
             for(k, v) in travel_filter.get("entorno").items():
                 if v:
                     filters_counter.entorno.increase_entorno_counter(k)
-                    
+            
+        if travel_filter.get("eco_travel"):
+            filters_counter.increase_eco_travel_counter()    
+        else :         
+            filters_counter.increase_no_eco_travel_counter()  
+        
+        if travel_filter.get("low_cost"):
+            filters_counter.increase_low_cost_counter()
+        else :
+            filters_counter.increase_no_low_cost_counter()
+            
     return filters_counter.to_travel_filter()   
 
 
@@ -83,7 +93,7 @@ class GroupRepository(Repository):
             {
                 "$push": {
                     "members": {"$each": [member.model_dump() if hasattr(member, 'model_dump') else member for member in members]},
-                    "users_travel_filter": {"$each": [filter.model_dump() for filter in preferences]},
+                    "users_travel_filter": {"$each": [filter.model_dump() if hasattr(filter, 'model_dump') else filter for filter in preferences]},
                 },
                 "$set": {"updated_at": datetime.now()},
             },
