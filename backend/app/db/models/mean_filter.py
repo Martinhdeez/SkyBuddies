@@ -92,6 +92,7 @@ class Activities(BaseModel):
     museums: Optional[int] = Field(default=0, title="museums")
     discos: Optional[int] = Field(default=0, title="discos")
     
+    
     def increase_activities_counter(self, activity_type: str):
         if activity_type == "hiking":
             self.hiking += 1
@@ -199,6 +200,7 @@ class MeanFilter(BaseModel):
     events: Optional[Events] = Field(default=Events(), title="events")
     continents: Optional[Continents] = Field(default=Continents(), title="continents")
     entorno: Optional[Entorno] = Field(default=Entorno(), title="entorno")
+
 
     
     def to_travel_filter(self) -> TravelFilter:

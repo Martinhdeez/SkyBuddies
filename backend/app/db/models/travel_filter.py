@@ -77,8 +77,8 @@ class TravelFilter(BaseModel):
     events: Optional[Events] = Field(default=Events(), title="events")
     continents: Optional[Continents] = Field(default=Continents(), title="continents")
     entorno: Optional[Entorno] = Field(default=Entorno(), title="entorno")
-    eco_travel: Optional[bool] = Field(default=False, title="eco_travel")
-    low_cost: Optional[bool] = Field(default=False, title="low_cost")
+    eco_travel: Optional[bool] = Field(default=True, title="eco_travel")
+    low_cost: Optional[bool] = Field(default=True, title="low_cost")
     updated_at: datetime = Field(default=datetime.now(), title="updated_at")
     created_at: datetime = Field(default=datetime.now(), title="created_at")
 

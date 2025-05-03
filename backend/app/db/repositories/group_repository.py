@@ -60,6 +60,7 @@ def most_popular_filters(travel_filters: List[TravelFilter]) -> MeanFilter:
             for(k, v) in travel_filter.get("entorno").items():
                 if v:
                     filters_counter.entorno.increase_entorno_counter(k)
+            
                     
     return filters_counter.to_travel_filter()   
 
