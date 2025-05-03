@@ -1,12 +1,11 @@
-from db.repositories.repository import RepositoryPattern
+from db.repositories.repository import Repository 
 from db.models.chat import Chat
-from db.repositories.repository import RepositoryPattern
 from typing import List
 from db.client import chats_collection
 from helpers.dict2model import convert_chat_to_model
 from datetime import datetime
 
-class ChatRepository(RepositoryPattern):
+class ChatRepository(Repository):
     def __init__(self):
         super().__init__(chats_collection, convert_chat_to_model)
 

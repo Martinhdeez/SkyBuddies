@@ -1,11 +1,11 @@
-from db.repositories.repository import RepositoryPattern
+from db.repositories.repository import Repository 
 from db.models.chat import ChatMessage 
-from db.repositories.repository import RepositoryPattern
+from db.repositories.repository import Repository 
 from typing import List
 from db.client import messages_collection
 from helpers.dict2model import convert_message_to_model
 
-class MessageRepository(RepositoryPattern): 
+class MessageRepository(Repository): 
     def __init__(self): 
         super().__init__(messages_collection, convert_message_to_model)
 

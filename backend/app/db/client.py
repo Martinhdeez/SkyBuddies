@@ -13,3 +13,5 @@ database = client[DATABASE_NAME]
 
 users_collection = database["users"]
 groups_collection = database["groups"]
+chats_collection = database["chats"]
+messages_collection = database["messages"]
