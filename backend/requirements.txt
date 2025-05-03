@@ -14,7 +14,6 @@ pyOpenSSL==25.0.0
 google-genai==1.13.0
 google-api-core==2.18.0
 google-auth==2.29.0
-googleapis-common-protos==1.63.0
 protobuf==4.25.3
 grpcio==1.62.2
 grpcio-status==1.62.2
