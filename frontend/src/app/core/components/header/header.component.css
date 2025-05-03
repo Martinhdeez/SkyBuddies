@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+* {
+  font-family: 'Inter', sans-serif;
+  font-weight: bold;
+}
+
+.site-header {
+  position: fixed;
+  left: 0;
+  width: 100%;
+  backdrop-filter: blur(10px);
+  z-index: 100;
+  padding: 1rem 0.5rem;
+}
+
+.site-header .container {
+  max-width: 90rem;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.site-header .logo a {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none;
+}
+
+.site-header .nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.site-header .nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  font-size: 0.85rem;
+}
+
+.site-header .nav ul li:hover a {
+  color: #ff3f81;
+}
+
+.profile-dropdown {
+  position: relative;
+  cursor: pointer;
+}
+
+.profile-icon {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  object-fit: cover;
+  transition: box-shadow 0.3s ease;
+}
+
+.profile-icon:hover {
+  box-shadow: 0 0 8px rgba(255, 63, 129, 0.7);
+  border: 2px solid #ff3f81;
+}
+
+.dropdown-menu {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 120%;
+  right: -90px;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  padding: 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  min-width: 200px;
+  z-index: 300;
+  color: #ff3f81;
+
+}
+
+.dropdown-menu.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  gap: 0 !important;
+}
+
+.dropdown-menu li {
+  padding: 0.5rem;
+  color: #ff3f81;
+
+}
+
+.profile-dropdown .dropdown-menu li a {
+  color: #ff3f81 !important;
+  font-weight: bolder;
+  display: block;
+  text-align: center;
+  transition: background 0.2s;
+}
+
+.profile-dropdown .dropdown-menu li a:hover {
+  background: #8a0537;
+  border-radius: 6px;
+  color: #ffff !important;
+}
+
+.profile-dropdown .dropdown-menu .logout a:hover {
+  background: #8a0537 !important;
+  border-radius: 6px;
+  color: #ffff !important;
+}

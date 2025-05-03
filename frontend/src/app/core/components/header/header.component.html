@@ -1,0 +1,36 @@
+<header class="site-header">
+  <div class="container">
+    <div class="logo">
+      <a routerLink="/index">HOGARIS</a>
+    </div>
+    <nav class="nav">
+      <ul>
+        <li *ngIf="authService.isAuthenticated(); else showLogin" class="profile-dropdown">
+          <a href="javascript:void(0)" (click)="toggleDropdown()">
+            <img ngSrc="../../../../assets/images/header/profile.svg" alt="Profile" class="profile-icon" height="16"
+                 width="16"/>
+          </a>
+          <ul class="dropdown-menu" [ngClass]="{'open': isDropdownOpen}">
+            <li><a [routerLink]="['/users', authService.getUserId()]">PERSONAL DATA</a></li>
+            <li><a routerLink="/settings">EXTRA-FUNCTION</a></li>
+            <li class="logout"><a href="javascript:void(0)" (click)="logoutAndReload()">LOGOUT</a></li>
+          </ul>
+        </li>
+        <ng-template #showLogin>
+          <li>
+            <a routerLink="/auth/login">LOGIN</a>
+          </li>
+        </ng-template>
+
+        <li>
+          <a routerLink="/properties">GROUPS</a>
+        </li>
+
+        <li>
+          <a routerLink="/contact">CONTACT</a>
+        </li>
+
+      </ul>
+    </nav>
+  </div>
+</header>
