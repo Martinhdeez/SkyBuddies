@@ -104,6 +104,7 @@ class GroupRepository(Repository):
         
         popular_filters = most_popular_filters(group["users_travel_filter"])
         print(f"Popular filters: {popular_filters}")
+        popular_filters.departure_city = group['users_travel_filter'][0]['departure_city']
         await self.data_collection.update_one(
             {"id": id},
             {

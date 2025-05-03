@@ -204,7 +204,7 @@ class MeanFilter(BaseModel):
     no_low_cost: Optional[int] = Field(default=0, title="no_low_cost")
     eco_travel: Optional[int] = Field(default=0, title="eco_travel")
     no_eco_travel: Optional[int] = Field(default=0, title="no_eco_travel")
-    
+    departure_city: Optional[str] = Field(default=None, title="departure_city")
     
     def increase_low_cost_counter(self):
             self.low_cost += 1
@@ -240,7 +240,6 @@ class MeanFilter(BaseModel):
         
         travel_filter.low_cost = (self.low_cost >= self.no_low_cost)
         travel_filter.eco_travel = (self.eco_travel >= self.no_eco_travel)
-        
         
         if popular_climate == "warm":
             travel_filter.climate.warm = True
