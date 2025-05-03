@@ -68,7 +68,7 @@ async def ws_chat(
         await ws_factory.disconnect(chat_id, websocket)
 
 
-@router.delete("{chat_id}", status_code=200)
+@router.delete("/{chat_id}", status_code=200)
 async def delete_chat(
         chat_id: str
 ):
