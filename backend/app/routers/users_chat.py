@@ -3,6 +3,7 @@ from OpenSSL.rand import status
 from starlette.responses import JSONResponse
 from db.models.user import User
 from services.chat_service import ChatService
+from services.group_service import GroupService
 from services.chat_message_service import ChatMessageService
 from services.autentication_service import get_current_user
 from fastapi import HTTPException, APIRouter, WebSocket, WebSocketDisconnect, Depends
@@ -19,6 +20,7 @@ router = APIRouter(
 ws_factory = WSConnectionFactory()
 message_service = ChatMessageService()
 chat_service = ChatService()
+group_service = GroupService()
 
 @router.post("/groups/{group_id}")
 async def create_chat(
@@ -47,6 +49,17 @@ async def ws_chat(
         await websocket.close()
         return
 
+
+    group = await group_service.get_group_by_id(chat.group_id)
+    if not group:
+        await websocket.send_text("Group not found")
+        await websocket.close()
+        return
+
+    if user.id not in group.members:
+        await websocket.send_text("User not in group")
+        await websocket.close()
+        return
 
     sender_id = user.id
     chat = await chat_service.get_chat_by_chat_id(chat_id)

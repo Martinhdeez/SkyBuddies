@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
-from routers import auth, users, groups, users_chat, users_chat_message, travels_filter, gemini
+from routers import auth, users, groups, users_chat, users_chat_message, travels_filter, gemini, routes
 
 app = FastAPI()
 
@@ -32,3 +32,4 @@ app.include_router(users_chat.router)
 app.include_router(users_chat_message.router)
 app.include_router(travels_filter.router)
 app.include_router(gemini.router)
+app.include_router(routes.router)
