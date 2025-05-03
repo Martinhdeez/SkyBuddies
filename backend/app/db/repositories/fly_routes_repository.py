@@ -7,8 +7,10 @@ from helpers.dict2model import convert_fly_route_to_model
 from datetime import datetime
 import requests
 from dotenv import load_dotenv
-import os
+import os       
+import time
 from fastapi import HTTPException
+from helpers.conversor import city_2_iata
 
 load_dotenv()
 api_key = os.getenv("API_KEY_SKY")
@@ -18,6 +20,19 @@ class FlyRoutesRepository(Repository):
         super().__init__(fly_routes_collection, convert_fly_route_to_model)
         self.base_url = "https://partners.api.skyscanner.net/apiservices/v3/flights/live/search/create"
 
+    def get_best_fly_route_with_retry(self, origin_city, destination_city, travel_time, low_cost, best_eco, group_members, retries=3):
+        for attempt in range(retries):
+            try:
+                return self.get_best_fly_route(
+                    origin_city, destination_city, travel_time, low_cost, best_eco, group_members
+                )
+            except HTTPException as e:
+                if attempt < retries - 1 and "404" in str(e.detail):
+                    print(f"Retrying... Attempt {attempt + 1}")
+                    time.sleep(1) 
+                else:
+                    raise HTTPException(status_code=404, detail="No route found matching the criteria") from e
+
     def get_best_fly_route(
             self,
             origin_city: str,
@@ -25,8 +40,15 @@ class FlyRoutesRepository(Repository):
             travel_time: datetime,
             low_cost: bool,
             best_eco: bool,
-            group_members: int = 1) -> Optional[dict]:
-        
+            group_members: int) -> Optional[dict]:
+
+        origin_city_iata = city_2_iata(origin_city)
+        destination_city_iata = city_2_iata(destination_city)
+        print("Origin city IATA code:", origin_city_iata)
+        print("Destination city IATA code:", destination_city_iata)
+        if not origin_city_iata or not destination_city_iata:
+            raise HTTPException(status_code=400, detail="Invalid city name provided.")
+
         headers = {
             "Content-Type": "application/json",
             "x-api-key": api_key
@@ -39,8 +61,8 @@ class FlyRoutesRepository(Repository):
                 "currency": "USD",
                 "query_legs": [
                     {
-                        "origin_place_id": {"iata": origin_city},
-                        "destination_place_id": {"iata": destination_city},
+                        "origin_place_id": {"iata": origin_city_iata},
+                        "destination_place_id": {"iata": destination_city_iata},
                         "date": {"year": travel_time.year, "month": travel_time.month, "day": travel_time.day}
                     }
                 ],
@@ -48,9 +70,6 @@ class FlyRoutesRepository(Repository):
                 "adults": group_members if group_members > 0 else 1,
             }
         }
-
-        print("Request body:", body)
-        print("Request headers:", headers)
 
         response = requests.post(self.base_url, json=body, headers=headers)
         
@@ -60,8 +79,6 @@ class FlyRoutesRepository(Repository):
 
         data = response.json()
         itineraries = data.get("content", {}).get("results", {}).get("itineraries", {})
-
-        print("Itineraries:", itineraries)
 
         if not itineraries:
             print("No itineraries found in the API response.")
@@ -94,8 +111,8 @@ class FlyRoutesRepository(Repository):
             if score < best_score:
                 best_score = score
                 best_itinerary = {
-                    "origin": origin_city,
-                    "destination": destination_city,
+                    "origin": origin_city_iata,
+                    "destination": destination_city_iata,
                     "price": price,
                     "emissionsKg": eco_emissions,
                     "details": itinerary
@@ -105,8 +122,8 @@ class FlyRoutesRepository(Repository):
             print("No valid itinerary found after processing.")
             if itineraries:
                 best_itinerary = {
-                    "origin": origin_city,
-                    "destination": destination_city,
+                    "origin": origin_city_iata,
+                    "destination": destination_city_iata,
                     "price": None,
                     "emissionsKg": None,
                     "details": next(iter(itineraries.values()))
