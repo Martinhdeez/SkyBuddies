@@ -10,4 +10,4 @@ pymongo==4.11.2
 uvicorn==0.34.0
 motor==3.7.0
 gunicorn==23.0.0
-
+pyOpenSSL==25.0.0
