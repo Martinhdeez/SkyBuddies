@@ -1,0 +1,133 @@
+:host {
+  --path-length: 0;
+  display: block;
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.home-container {
+  position: relative;
+  display: flex; flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(-45deg, #23153c, #0770E3, #23153c);
+  background-size: 400% 400%;
+  animation: gradientBG 20s ease infinite;
+  overflow: hidden;
+}
+@keyframes gradientBG {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.content {
+  z-index: 1;
+  margin: auto;
+  padding: 2rem 1rem;
+  background: white;
+  border-radius: 10px;
+  min-width: 50rem;
+}
+
+.question-wrapper {
+  text-align: center;
+  margin: auto 1em;
+  color: #23153c;
+}
+.question-text {
+  font-size: 2rem;
+  color: #23153c;
+  margin-bottom: 2rem;
+  letter-spacing: 1px;
+}
+
+.question-area {
+  position: relative;
+  min-height: 300px;
+}
+
+/* GRID */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+.card-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+.card-title {
+  font-size: 1.5rem;
+  color: #23153c;
+  margin: 0.5rem 0;
+  text-transform: uppercase;
+}
+.card-desc {
+  font-size: 1rem;
+  color: #23153c;
+  margin-bottom: 1.5rem;
+  opacity: 0.85;
+}
+
+.input-group {
+  width: 100%;
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.input-group input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 1px solid #23153c;
+  border-radius: 12px;
+  background: transparent;
+  color: #23153c;
+  outline: none;
+  transition: border-color 0.3s ease;
+  margin: 1rem;
+}
+.input-group input:focus {
+  border-color: #23153c !important;
+}
+.cta-btn {
+  padding: 0.75rem 1.5rem;
+  background: #23153c;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+  margin: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cta-btn:hover {
+  background: #23153c !important;
+  transform: translateY(-3px);
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .question-text {
+    font-size: 2rem;
+  }
+  .card {
+    padding: 1.5rem;
+  }
+}

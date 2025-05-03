@@ -1,0 +1,150 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+* {
+  font-family: 'Inter', sans-serif;
+  font-weight: bold;
+}
+
+.site-header .nav,
+.profile-dropdown {
+  overflow: visible;
+}
+
+.site-header {
+  position: fixed;
+  left: 0;
+  width: 100%;
+  backdrop-filter: blur(10px);
+  z-index: 100;
+  padding: 1rem 0.5rem;
+}
+
+.site-header .container {
+  max-width: 90rem;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.site-header .logo a {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none;
+}
+
+.site-header .nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.site-header .nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  font-size: 0.85rem;
+}
+
+.site-header .nav ul li:hover a {
+  color: #23153c;
+}
+
+.profile-dropdown {
+  position: relative;
+  cursor: pointer;
+}
+
+.profile-icon {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  object-fit: cover;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+.profile-icon:hover {
+  border-color: #23153c;
+  transform: scale(1.05);
+}
+
+.profile-dropdown .dropdown-menu {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow:
+          0 4px 12px rgba(0,0,0,0.1),
+          0 8px 24px rgba(0,0,0,0.05);
+  padding: 0.5rem 0;
+  min-width: 220px;
+  list-style: none;
+  margin: 0;
+  opacity: 0;
+  transform: scaleY(0.85);
+  transform-origin: top center;
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.cdk-overlay-pane .dropdown-menu {
+  opacity: 1 !important;
+  transform: scaleY(1) !important;
+}
+
+.dropdown-menu .section-header {
+  padding: 0.75rem 1rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #f5f5f5;
+  background: #23153c;
+  margin: 0;
+}
+
+
+.dropdown-menu li a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0.65rem 1rem;
+  color: #23153c;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease;
+  list-style: none;
+
+}
+
+.overlay-backdrop{
+  background: rgb(255, 255, 255);
+  border-radius: 10px;
+  min-width: 225px;
+}
+
+.dropdown-menu li a:hover {
+  background: #ffecec;
+  color: #23153c;
+  border-radius: 6px;
+}
+
+.dropdown-menu li a .icon {
+  margin-right: 0.75rem;
+  font-size: 1.1rem;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+  list-style: none;
+
+}
+.dropdown-menu li a:hover .icon {
+  opacity: 1;
+}
+
+.dropdown-menu .logout a:hover {
+  background: #ffecec;
+  color: #d9534f;
+}
