@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
@@ -30,7 +30,7 @@ export class ForgotPasswordComponent {
   showSnackbar = false;
   snackbarMessage = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService) {}
 
   openSnackbar(message: string): void {
     this.snackbarMessage = message;
