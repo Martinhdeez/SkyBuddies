@@ -12,3 +12,4 @@ client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URI)
 database = client[DATABASE_NAME]
 
 users_collection = database["users"]
+groups_collection = database["groups"]
