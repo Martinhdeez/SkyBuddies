@@ -1,4 +1,5 @@
 from typing import List
+from fastapi import HTTPException
 import httpx
 
 class RecommendedPlacesService:
@@ -9,20 +10,26 @@ class RecommendedPlacesService:
         params = {
             "q": city,
             "maxRows": 10,  
-            "lang": "es",   
+            "lang": "en",   
             "username": "drako266", 
-            "featureCode": "MT",  
+            "featureCode": "MNMT",  
+            "style": "FULL"
         }
 
         try:
+            print("antes AsyncClient")
             async with httpx.AsyncClient() as client:
                 response = await client.get(self.base_url, params=params)
-            
-            if response.status_code == 200:
+            print("despues AsyncClient")
+            if (response.status_code == 201 or response.status_code == 200):
                 data = response.json()  
+                print(data)
                 return [place["name"] for place in data.get("geonames", [])]
             else:
-                return []
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=f"Error fetching data from Geonames API: {response.text}",
+                )
         except Exception as e:
             print(f"Error fetching data from Geonames API: {e}")
             return []
