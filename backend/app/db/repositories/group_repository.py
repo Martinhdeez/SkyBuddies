@@ -133,13 +133,15 @@ class GroupRepository(Repository):
             {"visibility": GroupVisibility.PUBLIC}
         )
         docs = await cursor.to_list(None)
+        
+        print(f"Groups: {docs}")
         return [self.convert_helper(d) for d in docs]
 
     async def get_group_by_name(self, name: str) -> Optional[Group]:
         doc = await self.data_collection.find_one({"name": name})
         return self.convert_helper(doc) if doc else None
     
-    async def dget_group_by_code(self, code: str) -> True | False:
+    async def get_group_by_code(self, code: str) -> True | False:
         doc = await self.data_collection.find_one({"code": code})
         if doc:
             return True

@@ -17,8 +17,8 @@ group_service = GroupService()
 
 @router.get("", response_model=list[Group])
 async def get_groups():
-    group = await group_service.get_all_public_groups()
-    return list(group) 
+    groups = await group_service.get_all_public_groups()
+    return groups 
 
 @router.get("/{group_id}", response_model=Group)
 async def get_group(group_id: str):
@@ -50,11 +50,14 @@ async def create_group(
             detail="The group name already exists",
         )
     group_data = group_dto.model_dump()
+  
     if(group_data["visibility"] == "private"):
+        code = random.randint(0, 99999)
         while(await group_service.get_group_by_code(code)):
             code =  random.randint(0, 99999)
-       
-    group = Group(name=group_data["name"], visibility=group_data["visibility"], code=code)
+        group = Group(name=group_data["name"], visibility=group_data["visibility"], code=code)
+    else:   
+        group = Group(name=group_data["name"], visibility=group_data["visibility"])
 
     group = await group_service.add_group(group)
     
