@@ -1,0 +1,132 @@
+:host {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(360deg, #23153c, #0770E3);
+  background-size: 200% 200%;
+  animation: gradientBG 15s ease infinite;
+  min-height: 100vh;
+}
+
+.home-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+@keyframes gradientBG {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.content {
+  z-index: 1;
+  margin: auto;
+  padding: 2rem 1rem;
+  background: white;
+  border-radius: 10px;
+  min-width: 45rem;
+}
+
+.question-wrapper {
+  text-align: center;
+  color: #23153c;
+}
+
+.question-text {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.card {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  transition: transform .3s, box-shadow .3s;
+}
+
+.card-icon {
+  font-size: 2.5rem;
+  margin-bottom: .75rem;
+}
+
+.card-title {
+  font-size: 1.2rem;
+  text-transform: uppercase;
+}
+
+.card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.input-group {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.input-group input {
+  width: 60%;
+  padding: .75rem 1rem;
+  border: 2px solid #23153c;
+  border-radius: 12px;
+  outline: none;
+  transition: border-color .3s;
+}
+
+.input-group input:focus {
+  border-color: #0770E3;
+}
+
+.cta-btn, .back-btn {
+  margin: .5rem;
+  padding: .75rem 1.5rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background .3s, transform .2s;
+}
+
+.cta-btn {
+  background: #23153c;
+  color: #fff;
+}
+
+.back-btn {
+  background: transparent;
+  color: #23153c;
+  border: 2px solid #23153c;
+}
+
+.cta-btn:disabled,
+.back-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cta-btn:hover:not(:disabled),
+.back-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  background: #0770E3;
+  color: #fff;
+}
