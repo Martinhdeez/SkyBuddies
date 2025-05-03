@@ -1,8 +1,18 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
 from routers import auth, users
 
 app = FastAPI()
+
+# Configurar CORS para permitir el acceso desde Angular (puerto 4200)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Permitir all
+    allow_credentials=True,
+    allow_methods=["*"],  # Permitir todos los métodos (GET, POST, PUT, DELETE)
+    allow_headers=["*"],  # Permitir todos los encabezados
+)
 
 @app.get("/")
 async def root():
