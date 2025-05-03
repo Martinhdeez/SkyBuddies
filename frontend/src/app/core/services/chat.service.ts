@@ -79,12 +79,36 @@ export class ChatService {
    * @param chatId The ID of the chat to connect to.
    */
   connect(chatId: string): void {
-    this.socket = new WebSocket(`${this.apiUrl}/users/chat/${chatId}`);
+    if (!chatId) {
+      console.error('Chat ID no definido.');
+      return;
+    }
+
+    if (this.socket) {
+      this.disconnect(); // Cierra si hay uno abierto
+    }
+
+    this.socket = new WebSocket(`wss://${this.apiUrl}/users/chat/${chatId}`);
+
+    this.socket.onopen = () => {
+      console.log('✅ WebSocket conectado');
+    };
+
     this.socket.onmessage = (event) => {
       const data: Message = JSON.parse(event.data);
       this.messageSubject.next(data);
     };
+
+    this.socket.onerror = (err) => {
+      console.error('WebSocket error', err);
+    };
+
+    this.socket.onclose = () => {
+      console.warn('WebSocket cerrado');
+    };
   }
+
+
 
   /**
    * Disconnect from the WebSocket.
@@ -101,10 +125,13 @@ export class ChatService {
    * @param message The message object to send.
    */
   sendMessage(message: { chat_id: string; sender_uid: string; message: string }): void {
-    if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+    if (this.socket?.readyState === WebSocket.OPEN) {
       this.socket.send(JSON.stringify(message));
+    } else {
+      console.error('WebSocket no conectado aún.');
     }
   }
+
 
   /**
    * Listen for incoming messages.

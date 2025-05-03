@@ -21,8 +21,8 @@ export interface GroupRecommendation {
   members: string[];
   visibility: 'public' | 'private';
   travel_filter_mean: Filter;
-  code: string;
   users_travel_filter: Filter[];
+  code: string;
   created_at: string;
   updated_at: string;
 }
@@ -58,10 +58,11 @@ export class GroupService {
    */
   createGroup(payload: {
     name: string;
+    visibility: 'public' | 'private';
+    users_travel_filter: Filter[];
     members: string[];
-    visibility: 'public'|'private';
-  }): Observable<Group> {
-    return this.http.post<Group>(this.baseUrl, payload);
+  }): Observable<GroupRecommendation> {
+    return this.http.post<GroupRecommendation>(this.baseUrl, payload);
   }
 
   /**

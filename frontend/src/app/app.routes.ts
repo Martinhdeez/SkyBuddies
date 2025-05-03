@@ -11,6 +11,7 @@ import {ResetPasswordComponent} from './features/auth/reset-password/reset-passw
 import {FiltersComponent} from './features/filters/filters.component';
 import {UserComponent} from './features/user/user.component';
 import {RecommendationsComponent} from './features/recommendations/recommendations.component';
+import {NewGroupComponent} from './features/group/newGroup/new-group.component';
 
 /*
   UNCOMMENT THIS LINE FOR CHECK IF THE RAILWAY IS WORKING BUT IT'S COMMENTED FOR NOT CONSUMING THE RAILWAY API
@@ -31,12 +32,14 @@ export const routes: Routes = [
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
   { path: 'users/chat', component: ChatComponent },
   { path: 'groups', component: GroupComponent },
+  { path: 'groups/new', component: NewGroupComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'filters', component: FiltersComponent },
   { path: 'filters/:id', component: FiltersComponent },
   { path: 'user/:id', component: UserComponent },
   { path: 'recommendations', component: RecommendationsComponent },
+  { path: 'users/chat/groups/:groupId', component: GroupComponent },
   // IT'S OBLIGATORY TO HAVE THIS LINE AT THE END OF THE ROUTES BECAUSE IT REDIRECTS
   // TO THE INDEX PAGE IF THE URL IS NOT FOUND
   { path: '**', redirectTo: 'index' },

@@ -143,3 +143,19 @@
   font-style: italic;
   color: #ddd;
 }
+
+.btn-chat {
+  margin-top: 1rem;
+  background: #fff;
+  color: #0770E3;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.btn-chat:hover {
+  background: #e0e0e0;
+  transform: translateY(-2px);
+}

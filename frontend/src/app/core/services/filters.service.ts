@@ -63,6 +63,9 @@ export interface Filter {
     | 'island',
     boolean
   >;
+  low_cost: boolean;
+  eco_travel: boolean;
+  departure_city: string;
   created_at: string;
   updated_at: string;
 }

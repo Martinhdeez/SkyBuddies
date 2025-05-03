@@ -1,17 +1,14 @@
-// src/app/features/group/group.component.ts
+// src/app/features/group/new-group.component.ts
 import {
   Component,
   OnInit
 } from '@angular/core';
 import {
-  FormBuilder,
-  Validators,
-  FormGroup,
   FormControl,
   ReactiveFormsModule
 } from '@angular/forms';
 import { CommonModule }   from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import {
   trigger, transition, style, animate,
   query, stagger, state
@@ -29,7 +26,6 @@ import { GroupService, Group } from '../../core/services/group.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RouterLink,
     HeaderComponent,
     FooterComponent
   ],
@@ -109,5 +105,9 @@ export class GroupComponent implements OnInit {
   /** Navega al formulario "nuevo grupo" en otra página */
   goToCreate() {
     this.router.navigate(['/groups/new']);
+  }
+
+  goToChat(groupId: string) {
+    this.router.navigate(['/users/chat/groups', groupId]);
   }
 }
