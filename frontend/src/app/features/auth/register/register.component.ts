@@ -7,11 +7,12 @@ import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { NgIf } from '@angular/common';
 import { CustomSnackbarComponent } from '../../../core/components/custom-snackbar/custom-snackbar.component';
+import {HeaderComponent} from '../../../core/components/header/header.component';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, FooterComponent, RouterLink, NgIf, CustomSnackbarComponent],
+  imports: [ReactiveFormsModule, FooterComponent, RouterLink, NgIf, CustomSnackbarComponent, HeaderComponent],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })

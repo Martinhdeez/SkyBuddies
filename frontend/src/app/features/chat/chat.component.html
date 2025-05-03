@@ -1,0 +1,36 @@
+<div class="chat-container">
+  <app-header></app-header>
+
+  <div class="chat-wrapper">
+    <div class="chat-box">
+      <!-- Lista de mensajes -->
+      <div class="messages" id="messageContainer" (scroll)="onScroll()">
+        <div
+          *ngFor="let msg of messages"
+          [ngClass]="{'message-bubble': true, 'sent': msg.sender_uid === userId, 'received': msg.sender_uid !== userId}">
+          {{ msg.message }}
+          <div class="timestamp">{{ msg.created_at | date:'shortTime' }}</div>
+        </div>
+      </div>
+
+      <!-- Input de mensaje -->
+      <div class="input-container">
+        <input
+          type="text"
+          [(ngModel)]="newMessage"
+          (keydown.enter)="sendMessage()"
+          placeholder="Escribe un mensaje..." />
+        <button (click)="sendMessage()">Enviar</button>
+      </div>
+
+      <!-- Botón flotante para hacer scroll al final -->
+      <button *ngIf="showScrollButton"
+              class="scroll-to-bottom"
+              (click)="scrollToBottom(true)">
+        ⬇
+      </button>
+    </div>
+  </div>
+
+  <app-footer></app-footer>
+</div>

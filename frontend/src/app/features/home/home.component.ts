@@ -1,80 +1,72 @@
-import { Component, AfterViewInit } from '@angular/core';
-import {RouterLink} from '@angular/router';
-import {FooterComponent} from '../../core/components/footer/footer.component';
-import {HeaderComponent} from '../../core/components/header/header.component';
-
-declare const VANTA: any;
+import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import { Router } from '@angular/router';
+import { trigger, transition, style, animate, state } from '@angular/animations';
+import { HeaderComponent } from '../../core/components/header/header.component';
+import { FooterComponent } from '../../core/components/footer/footer.component';
+import { FormsModule } from '@angular/forms';
+import {NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  templateUrl: './index.component.html',
   imports: [
-    RouterLink,
-    FooterComponent,
     HeaderComponent,
+    FooterComponent,
+    FormsModule,
+    NgIf
   ],
-  styleUrls: ['./index.component.css']
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css'],
+  animations: [
+    trigger('fadeSlide', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('600ms ease-out', style({ opacity: 1 }))
+      ]),
+    ]),
+    trigger('cardHover', [
+      state('rest',   style({ transform: 'scale(1)' })),
+      state('hover',  style({ transform: 'scale(1.05)' })),
+      transition('rest <=> hover', animate('300ms ease-in-out'))
+    ])
+  ]
 })
-export class IndexComponent implements AfterViewInit {
+
+export class HomeComponent implements AfterViewInit {
+  @ViewChild('flightPath') flightPath?: ElementRef<SVGPathElement>;
+
+  constructor(private router: Router) {}
 
   ngAfterViewInit(): void {
-    VANTA.NET({
-      el: "#vanta-bg",
-      mouseControls: true,
-      touchControls: true,
-      gyroControls: false,
-      minHeight: 200.00,
-      minWidth: 200.00,
-      scale: 1.00,
-      color: "#ffffff",
-      backgroundColor: "#0770E3",
-      texturePath: "./gallery/noise.png"
-    })
-
-    // INIT TYPING EFFECT
-    const typewriterElement = document.getElementById('typewriter');
-    const words = [
-      "on your own",
-      "with your team",
-      "with your family",
-      "with your friends",
-      "with your colleagues"
-    ];
-    const typeSpeed = 25;    // SPEED TYPING IN ms
-    const eraseSpeed = 25;   // SPEED ERASING IN ms
-    const delayBetween = 1000; // TIME BETWEEN TYPING AND ERASING IN ms
-
-    if (typewriterElement) {
-      this.typeWriter(typewriterElement, words, typeSpeed, eraseSpeed, delayBetween);
+    if (!this.flightPath) {
+      return;
     }
+    const pathEl = this.flightPath.nativeElement;
+    const length = pathEl.getTotalLength();
+    pathEl.style.setProperty('--path-length', `${length}`);
   }
 
-  private typeWriter(element: HTMLElement, words: string[], typeSpeed: number, eraseSpeed: number, delayBetween: number): void {
-    let wordIndex = 0;
-    let charIndex = 0;
+  currentQuestion = 1;
+  hoverState: Record<string, 'rest' | 'hover'> = {
+    solo: 'rest',
+    accompanied: 'rest',
+    private: 'rest',
+    public: 'rest'
+  };
+  showGroupInput = true;
+  groupCode = '';
 
-    const type = () => {
-      if (charIndex < words[wordIndex].length) {
-        element.textContent += words[wordIndex].charAt(charIndex);
-        charIndex++;
-        setTimeout(type, typeSpeed);
-      } else {
-        setTimeout(erase, delayBetween);
-      }
-    };
-
-    const erase = () => {
-      if (charIndex > 0) {
-        element.textContent = words[wordIndex].substring(0, charIndex - 1);
-        charIndex--;
-        setTimeout(erase, eraseSpeed);
-      } else {
-        wordIndex = (wordIndex + 1) % words.length;
-        setTimeout(type, typeSpeed);
-      }
-    };
-
-    type();
+  onSelectSolo()        { this.router.navigate(['/solo-destination']).then(r => console.log('Navigated:', r)); }
+  onSelectAccompanied() { this.currentQuestion = 2; }
+  onSelectPrivate()     { this.showGroupInput = true; }
+  onJoinGroup() {
+    if (this.groupCode.trim()) {
+      this.router.navigate(['/join-private'], {queryParams: {code: this.groupCode}}).then(r => console.log('Navigated:', r));
+     }
+  }
+  onSelectPublic()      { this.router.navigate(['/public-groups']).then(r => console.log('Navigated:', r)); }
+  // Gestión del hover
+  setHover(card: 'solo'|'accompanied'|'private'|'public', state: 'rest' | 'hover') {
+    this.hoverState[card] = state;
   }
 }

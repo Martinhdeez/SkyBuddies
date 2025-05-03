@@ -46,7 +46,7 @@
 }
 
 .site-header .nav ul li:hover a {
-  color: #ff3f81;
+  color: #987dca;
 }
 
 .profile-dropdown {
@@ -64,8 +64,8 @@
 }
 
 .profile-icon:hover {
-  box-shadow: 0 0 8px rgba(255, 63, 129, 0.7);
-  border: 2px solid #ff3f81;
+  box-shadow: 0 0 8px rgb(152, 125, 202);
+  border: 2px solid #987dca;
 }
 
 .dropdown-menu {
@@ -84,7 +84,7 @@
   transition: all 0.3s ease;
   min-width: 200px;
   z-index: 300;
-  color: #ff3f81;
+  color: #23153c;
 
 }
 
@@ -97,12 +97,12 @@
 
 .dropdown-menu li {
   padding: 0.5rem;
-  color: #ff3f81;
+  color: #987dca;
 
 }
 
 .profile-dropdown .dropdown-menu li a {
-  color: #ff3f81 !important;
+  color: #987dca !important;
   font-weight: bolder;
   display: block;
   text-align: center;
@@ -110,13 +110,13 @@
 }
 
 .profile-dropdown .dropdown-menu li a:hover {
-  background: #8a0537;
+  background: #987dca;
   border-radius: 6px;
   color: #ffff !important;
 }
 
 .profile-dropdown .dropdown-menu .logout a:hover {
-  background: #8a0537 !important;
+  background: #987dca !important;
   border-radius: 6px;
   color: #ffff !important;
 }

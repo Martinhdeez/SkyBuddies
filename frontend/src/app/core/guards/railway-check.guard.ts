@@ -5,6 +5,10 @@ import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 
+interface HealthResponse {
+  status: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -14,21 +18,12 @@ export class RailwayCheckGuard implements CanActivate {
 
   canActivate(): Observable<boolean> {
     const healthUrl = `${environment.apiUrl}/healthz`;
-    console.log('Iniciando validación de Railway con URL:', healthUrl);
 
-    return this.http.get<any>(healthUrl).pipe(
-      map(response => {
-        console.log('Respuesta de /healthz:', response);
-        if (response && response.status === "OK") {
-          return true;
-        } else {
-          this.router.navigate(['/error']).then(success => console.log('Redirigiendo a error:', success));
-          return false;
-        }
-      }),
+    return this.http.get<HealthResponse>(healthUrl).pipe(
+      map(response => response.status === "OK"),
       catchError(error => {
-        console.error('Error al validar /healtz:', error);
-        this.router.navigate(['/error/permission']).then(success => console.log('Redirigiendo a error:', success));
+        console.error('Error al validar /healthz:', error);
+        this.router.navigate(['/error/internal']).then(r => console.log('Navigated to error page:', r));
         return of(false);
       })
     );

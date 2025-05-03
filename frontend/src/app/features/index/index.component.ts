@@ -1,6 +1,7 @@
 import { Component, AfterViewInit } from '@angular/core';
 import {RouterLink} from '@angular/router';
 import {FooterComponent} from '../../core/components/footer/footer.component';
+import {HeaderComponent} from '../../core/components/header/header.component';
 
 declare const VANTA: any;
 
@@ -11,6 +12,7 @@ declare const VANTA: any;
   imports: [
     RouterLink,
     FooterComponent,
+    HeaderComponent,
   ],
   styleUrls: ['./index.component.css']
 })

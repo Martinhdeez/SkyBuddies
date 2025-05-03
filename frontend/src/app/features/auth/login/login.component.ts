@@ -9,11 +9,12 @@ import { of } from 'rxjs';
 import { emailOrUsernameValidator } from '../../../core/validators/email-or-username.validator';
 import { CustomSnackbarComponent } from '../../../core/components/custom-snackbar/custom-snackbar.component';
 import { NgIf } from '@angular/common';
+import {HeaderComponent} from '../../../core/components/header/header.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, FooterComponent, CustomSnackbarComponent, NgIf],
+  imports: [ReactiveFormsModule, RouterLink, FooterComponent, CustomSnackbarComponent, NgIf, HeaderComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
