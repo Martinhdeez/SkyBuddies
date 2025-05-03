@@ -1,0 +1,249 @@
+:host {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(-45deg, #23153c, #0770E3, #23153c);
+  background-size: 400% 400%;
+  animation: gradientBG 20s ease infinite;
+  min-height: 100vh;
+}
+
+@keyframes gradientBG {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/*============================
+  Section Layout
+=============================*/
+.user-detail-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+/*============================
+  Card Container
+=============================*/
+.user-card {
+  position: relative;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+  width: 100%;
+  max-width: 550px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Top color band */
+.user-card::before {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 5.5rem;
+  background: linear-gradient(135deg, #0770E3, #23153c);
+}
+
+/*============================
+  Avatar & Header
+=============================*/
+.card-header {
+  padding: 0 1.5rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+.avatar-container {
+  position: absolute;
+  top: 2.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 100px;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  background: #f0f0f0;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+.avatar-container:hover {
+  box-shadow: 0 0 0 6px rgba(7,112,227,0.3);
+}
+.avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.header-info {
+  margin-top: 4.5rem;
+}
+.user-name {
+  margin: 0.5rem 0 0.25rem;
+  font-size: 1.875rem;
+  color: #23153c;
+  font-weight: 700;
+}
+.account-status {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: #e4e6eb;
+  color: #555;
+  font-size: 0.85rem;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+/*============================
+  Floating Label Inputs - Estilo Mejorado
+=============================*/
+.floating-label {
+  position: relative;
+  margin-top: 1rem;
+}
+
+/* Contenedor del input */
+.floating-label input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  font-size: 1rem;
+  background: #fafafa;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Color y sombra al enfocar */
+.floating-label input:focus {
+  border-color: #0770E3;
+  box-shadow: 0 0 0 3px rgba(7,112,227,0.15);
+}
+
+/* Label sobre el input */
+.floating-label label {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #fff;
+  padding: 0 0.25rem;
+  color: #777;
+  font-size: 0.9rem;
+  pointer-events: none;
+  transition: all 0.2s ease;
+}
+
+/* Cuando el input está enfocado o tiene texto, mueve el label arriba */
+.floating-label input:focus + label,
+.floating-label input:not(:placeholder-shown) + label {
+  top: -0.6rem;
+  font-size: 0.75rem;
+  color: #0770E3;
+}
+
+/* Placeholder transparente para que no interfiera */
+.floating-label input::placeholder {
+  color: transparent;
+}
+
+/* Ajuste para inputs de email/teléfono etc. */
+.floating-label input[type="email"],
+.floating-label input[type="text"] {
+  letter-spacing: 0.5px;
+}
+/*============================
+  Details Grid (2 Columns)
+=============================*/
+.card-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem 1rem;
+  padding: 1.5rem;
+}
+.detail-item {
+  display: flex;
+  flex-direction: column;
+}
+.detail-label {
+  font-size: 0.8rem;
+  color: #777;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.detail-value {
+  font-size: 1rem;
+  color: #23153c;
+  word-break: break-word;
+}
+
+/*============================
+  Action Buttons
+=============================*/
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem 1.5rem;
+  justify-content: center;
+}
+
+.btn {
+  flex: 1 1 calc(25% - 0.75rem); /* Ahora caben 4 botones */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+}
+.btn.edit   { background: #0770E3; }
+.btn.save   { background: #28a745; }
+.btn.back   { background: #6c757d; }
+.btn.delete { background: #e53e3e; } /* rojo fuerte para Delete */
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+.btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Hover state para el botón delete (opcional) */
+.btn.delete:hover:not(:disabled) {
+  background: #c53030;
+}
+
+/*============================
+  Responsive Tweaks
+=============================*/
+@media (max-width: 600px) {
+  .card-details {
+    grid-template-columns: 1fr;
+  }
+  .action-buttons {
+    flex-direction: column;
+  }
+  .btn {
+    flex: 1 1 100%;
+  }
+}

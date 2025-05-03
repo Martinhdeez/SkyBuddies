@@ -1,6 +1,6 @@
 <header class="site-header">
     <div class="container">
-        <div class="logo"><a routerLink="/index">SKYBUDDIES</a></div>
+        <div class="logo"><a routerLink="/index">SkyBuddies</a></div>
 
         <nav class="nav">
             <ul>
@@ -25,18 +25,19 @@
                     >
                         <div class="overlay-backdrop">
                         <ul class="dropdown-menu">
-                            <li class="section-header">Mi Cuenta</li>
-                            <li><a [routerLink]="['/users', authService.getUserId()]">
-                                <span class="icon">👤</span> Personal Data
+                            <li class="section-header">MY ACCOUNT</li>
+                            <li><a href="#" (click)="goToProfile($event)">
+                                <span class="icon">👤</span>
+                                PERSONAL DATA
                             </a></li>
                             <li><a routerLink="/settings">
-                                <span class="icon">⚙️</span> Extra-Function
+                                <span class="icon">⚙️</span> EXTRA-FUNCTION
                             </a></li>
 
-                            <li class="section-header">Acciones</li>
+                            <li class="section-header">ACTIONS</li>
                             <li class="logout">
                                 <a href="#" (click)="logoutAndReload()">
-                                    <span class="icon">🚪</span> Logout
+                                    <span class="icon">🚪</span> LOGOUT
                                 </a>
                             </li>
                         </ul>
@@ -48,8 +49,9 @@
                     <li><a routerLink="/login">LOGIN</a></li>
                 </ng-template>
 
-                <li><a routerLink="/groups">GROUPS</a></li>
-                <li><a href="https://help…">CONTACT</a></li>
+                <li *ngIf="authService.isAuthenticated()"><a routerLink="/groups">MY GROUPS</a></li>
+
+                <li><a href="https://help.skyscanner.net/hc/en-us?_gl=1%2A1kfnx3e%2A_gcl_au%2ANDA5NzY1MDY4LjE3MzkxODMwOTQ.%2AFPAU%2ANDA5NzY1MDY4LjE3MzkxODMwOTQ.&skyCurrency=currency_eur&skyLanguage=lang_es&skyMarket=es_skyscanner">CONTACT</a></li>
             </ul>
         </nav>
     </div>

@@ -1,0 +1,112 @@
+<app-header></app-header>
+
+<section class="user-detail-section" *ngIf="user" @fadeSlide>
+  <div class="user-card">
+
+    <!-- Header con avatar y nombre -->
+    <div class="card-header">
+      <div class="avatar-container">
+        <img src="assets/images/user/user-icon.svg" alt="Avatar" class="avatar" />
+      </div>
+      <div class="header-info">
+        <div class="name-wrap">
+          <h2 *ngIf="!isEditing" class="user-name">{{ user.full_name }}</h2>
+          <div *ngIf="isEditing" class="floating-label">
+            <input type="text" [(ngModel)]="editedUser.full_name" required />
+            <label>Full Name</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detalles del usuario -->
+    <div class="card-details" @inputsAnim>
+      <div class="detail-item">
+        <label class="detail-label">Username</label>
+        <ng-container *ngIf="!isEditing; else editUsername">
+          <span class="detail-value">{{ user.username }}</span>
+        </ng-container>
+        <ng-template #editUsername>
+          <div class="floating-label">
+            <input type="text" [(ngModel)]="editedUser.username" required />
+            <label>Username</label>
+          </div>
+        </ng-template>
+      </div>
+
+      <div class="detail-item">
+        <label class="detail-label">Email</label>
+        <ng-container *ngIf="!isEditing; else editEmail">
+          <span class="detail-value">{{ user.email }}</span>
+        </ng-container>
+        <ng-template #editEmail>
+          <div class="floating-label">
+            <input type="email" [(ngModel)]="editedUser.email" required />
+            <label>Email</label>
+          </div>
+        </ng-template>
+      </div>
+
+      <div class="detail-item">
+        <label class="detail-label">Created At</label>
+        <span class="detail-value">{{ user.created_at | date:'dd/MM/yyyy' }}</span>
+      </div>
+
+      <div class="detail-item">
+        <label class="detail-label">Last Updated</label>
+        <span class="detail-value">{{ user.updated_at ? (user.updated_at | timeAgo) : '-' }}</span>
+      </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="action-buttons">
+      <button
+        class="btn edit"
+        (click)="toggleEditMode()"
+        [disabled]="isLoading"
+        [@buttonHover]="hoverState['edit']"
+        (mouseenter)="setHover('edit','hover')"
+        (mouseleave)="setHover('edit','rest')"
+      >
+        ✏️ {{ isEditing ? 'Cancel' : 'Edit' }}
+      </button>
+
+      <button
+        *ngIf="isEditing"
+        class="btn save"
+        (click)="saveChanges()"
+        [disabled]="isLoading"
+        [@buttonHover]="hoverState['save']"
+        (mouseenter)="setHover('save','hover')"
+        (mouseleave)="setHover('save','rest')"
+      >
+        💾 Save
+      </button>
+
+      <button
+        class="btn back"
+        (click)="goBack()"
+        [disabled]="isEditing || isLoading"
+        [@buttonHover]="hoverState['back']"
+        (mouseenter)="setHover('back','hover')"
+        (mouseleave)="setHover('back','rest')"
+      >
+        ↩️ Back
+      </button>
+
+      <!-- Nuevo botón Delete Account -->
+      <button
+        class="btn delete"
+        (click)="deleteAccount()"
+        [disabled]="isEditing || isLoading"
+        [@buttonHover]="hoverState['delete']"
+        (mouseenter)="setHover('delete','hover')"
+        (mouseleave)="setHover('delete','rest')"
+      >
+        🗑️ Delete Account
+      </button>
+    </div>
+  </div>
+</section>
+
+<app-footer></app-footer>

@@ -1,0 +1,152 @@
+/* group-page.component.css */
+:host {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(360deg, #23153c, #0770E3);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+.groups-page {
+  background: linear-gradient(-45deg, #23153c, #0770E3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+  flex-direction: row;
+
+}
+.groups-page * {
+  overflow: visible !important;
+}
+
+.content {
+  flex: 1;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+  color: #fff;
+}
+
+/* Header y controles */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+.controls {
+  display: flex;
+  gap: 1rem;
+}
+.search-input {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  width: 200px;
+  font-size: 0.9rem;
+  outline: none;
+}
+.search-input:focus {
+  box-shadow: 0 0 0 2px rgba(7,112,227,0.5);
+}
+
+/* Botón añadir */
+.btn-add {
+  background: #fff;
+  color: #23153c;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
+.btn-add:hover {
+  background: #f0f0f0;
+  transform: translateY(-2px);
+}
+
+/* Formulario slide-down */
+.new-group-form {
+  background: #fff;
+  color: #23153c;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+}
+.new-group-form form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.new-group-form input,
+.new-group-form select {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+.new-group-form button {
+  grid-column: 1 / -1;
+  padding: 0.75rem;
+  background: #0770E3;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.new-group-form button:hover {
+  background: #055bb5;
+  transform: translateY(-2px);
+}
+
+/* Grid de cards */
+.groups-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Card estilo glass */
+.group-card {
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+  transition: box-shadow 0.2s;
+}
+.group-card h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+}
+.group-card p {
+  margin: 0.25rem 0;
+  font-size: 0.95rem;
+}
+.group-card .visibility {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  padding: 0.2rem 0.5rem;
+  background: rgba(255,255,255,0.2);
+  border-radius: 4px;
+  opacity: 0.8;
+}
+.group-card:hover {
+  box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+}
+
+/* Mensaje “no results” */
+.no-results {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-style: italic;
+  color: #ddd;
+}

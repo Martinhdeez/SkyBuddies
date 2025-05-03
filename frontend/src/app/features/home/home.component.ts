@@ -56,7 +56,7 @@ export class HomeComponent implements AfterViewInit {
   showGroupInput = true;
   groupCode = '';
 
-  onSelectSolo()        { this.router.navigate(['/solo-destination']).then(r => console.log('Navigated:', r)); }
+  onSelectSolo()        { this.router.navigate(['/filters']).then(r => console.log('Navigated:', r)); }
   onSelectAccompanied() { this.currentQuestion = 2; }
   onSelectPrivate()     { this.showGroupInput = true; }
   onJoinGroup() {

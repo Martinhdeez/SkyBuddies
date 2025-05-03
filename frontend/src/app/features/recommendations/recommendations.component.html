@@ -1,0 +1,25 @@
+<!-- src/app/features/recommendations/recommendations.component.html -->
+<div class="recommendations-page">
+  <app-header></app-header>
+
+  <main class="content" @listAnim>
+    <h1 class="title">Recommended Countries</h1>
+    <div class="countries-grid">
+      <div
+        *ngFor="let country of recommendations"
+        class="country-card"
+        [@cardHover]="hoverState[country]"
+        (mouseenter)="setHover(country,'hover')"
+        (mouseleave)="setHover(country,'rest')"
+      >
+        {{ country }}
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn" routerLink="/filters">Modify Filters</button>
+      <button class="btn" routerLink="/groups">View Groups</button>
+    </div>
+  </main>
+
+  <app-footer></app-footer>
+</div>

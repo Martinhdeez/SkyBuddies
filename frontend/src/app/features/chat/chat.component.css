@@ -47,8 +47,9 @@ app-footer {
   border-bottom: 1px solid #eee;
 }
 
+/* Virtual scroll viewport */
 .messages-viewport {
-  height: calc(100% - 80px);
+  height: calc(100% - 80px); /* Ajusta para que no solape con el input */
   width: 100%;
   overflow: auto;
   background: #f8f9fa;
@@ -76,6 +77,7 @@ app-footer {
   background: #6bbcff;
   border-bottom-left-radius: 4px;
 }
+
 .message-bubble.received {
   align-self: flex-end;
   background: #e4e6eb;
@@ -98,6 +100,7 @@ app-footer {
   bottom: 0;
   z-index: 2;
 }
+
 .input-container input {
   flex: 1;
   padding: 10px 14px;
@@ -107,9 +110,11 @@ app-footer {
   font-size: 0.9rem;
   transition: border-color 0.2s;
 }
+
 .input-container input:focus {
   border-color: #0770E3;
 }
+
 .input-container button {
   margin-left: 12px;
   padding: 10px 16px;
@@ -122,6 +127,7 @@ app-footer {
   font-weight: 600;
   transition: background 0.2s, transform 0.2s;
 }
+
 .input-container button:hover {
   background: #055bb5;
   transform: translateY(-2px);

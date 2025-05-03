@@ -151,6 +151,7 @@ export class AuthService {
     }
     try {
       const decodedToken: any = jwtDecode(token);
+      console.log(decodedToken);
       return decodedToken.id || null;
     } catch (error) {
       console.error('Error al decodificar el token', error);

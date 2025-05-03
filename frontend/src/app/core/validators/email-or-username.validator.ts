@@ -1,5 +1,10 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
+/**
+ * Validator to check if the input is a valid email or username.
+ * If it contains '@', it checks if it's a valid email format.
+ * Otherwise, it assumes it's a username.
+ */
 export function emailOrUsernameValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     const value = control.value;

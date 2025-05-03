@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
-import { RouterLink } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { NgIf, NgOptimizedImage } from '@angular/common';
 
@@ -25,7 +25,10 @@ export class HeaderComponent implements OnInit {
     }
   ];
 
-  constructor(public authService: AuthService) {}
+  constructor(
+    public authService: AuthService,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {}
 
@@ -33,6 +36,13 @@ export class HeaderComponent implements OnInit {
     evt.preventDefault();
     evt.stopPropagation();
     this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  goToProfile(evt: MouseEvent) {
+    evt.preventDefault();
+    this.isDropdownOpen = false;
+    const uid = this.authService.getUserId();
+    this.router.navigate(['/user', uid]);
   }
 
   logoutAndReload(): void {

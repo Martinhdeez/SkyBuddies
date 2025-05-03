@@ -6,16 +6,19 @@ import {
   ViewChild
 } from '@angular/core';
 import { ChatService, Message } from '../../core/services/chat.service';
-import { AuthService } from '../../core/services/auth.service';
+import { AuthService }   from '../../core/services/auth.service';
 import { ActivatedRoute } from '@angular/router';
 import { HeaderComponent } from '../../core/components/header/header.component';
 import { FooterComponent } from '../../core/components/footer/footer.component';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { CommonModule }   from '@angular/common';
+import { FormsModule }    from '@angular/forms';
 import {
   ScrollingModule,
   CdkVirtualScrollViewport
 } from '@angular/cdk/scrolling';
+import {
+  trigger, transition, style, animate, query, stagger
+} from '@angular/animations';
 
 @Component({
   selector: 'app-chat',
@@ -28,14 +31,26 @@ import {
     FooterComponent
   ],
   templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.css']
+  styleUrls: ['./chat.component.css'],
+  animations: [
+    trigger('listAnim', [
+      transition('* => *', [
+        query(':enter', [
+          style({ opacity: 0, transform: 'translateY(20px)' }),
+          stagger('50ms', [
+            animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+          ])
+        ], { optional: true })
+      ])
+    ])
+  ]
 })
 export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(CdkVirtualScrollViewport) viewport!: CdkVirtualScrollViewport;
 
-  userId    = '';
-  groupId   = '';
-  chatId    = '';
+  userId     = '';
+  groupId    = '';
+  chatId     = '';
   messages: Message[] = [];
   newMessage = '';
 
@@ -59,11 +74,10 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    // Forzamos a CDK a recalcular la altura del viewport ahora que el CSS está aplicado
-    setTimeout(() => this.viewport.checkViewportSize(), 100);
+    setTimeout(() => this.viewport.checkViewportSize());
   }
 
-  initChat(): void {
+  private initChat(): void {
     this.chatService.createChat(this.groupId).subscribe({
       next: res => {
         this.chatId = res.chat_id;
@@ -78,11 +92,10 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  loadMessages(): void {
+  private loadMessages(): void {
     this.chatService.getAllMessages(this.chatId).subscribe({
       next: all => {
         this.messages = all;
-        // un tick para que lleguen y luego scroll
         setTimeout(() => this.scrollToBottom(true));
       },
       error: err => console.error('Error cargando mensajes:', err)
@@ -102,53 +115,31 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
       updated_at: new Date().toISOString()
     };
 
-    // Enviar mensaje al servicio
     this.chatService.sendMessage({
       chat_id: this.chatId,
       sender_uid: this.userId,
       message: text
     });
 
-    // Añadir el mensaje temporal para actualizar la UI
-    this.messages.push(temp);
-
-    // Vaciar el input
-    this.newMessage = '';
-
-    // Actualizar el scroll para el nuevo mensaje
-    setTimeout(() => {
-      this.scrollToBottom(true);
-    }, 50); // Ajusta el tiempo si es necesario
-
-
-
-  this.chatService.sendMessage({
-      chat_id: this.chatId,
-      sender_uid: this.userId,
-      message: text
-    });
-
     this.messages.push(temp);
     this.newMessage = '';
-    this.scrollToBottom(true);
+    setTimeout(() => this.scrollToBottom(true), 50);
   }
 
   scrollToBottom(force = false): void {
     const count = this.messages.length;
     if (!this.viewport) return;
-
     if (force) {
       this.viewport.scrollToIndex(count - 1, 'smooth');
     } else {
-      const rendered = this.viewport.getRenderedRange();
-      if (count - 1 >= rendered.end - 1) {
+      const { start, end } = this.viewport.getRenderedRange();
+      if (count - 1 >= end - 1) {
         this.viewport.scrollToIndex(count - 1, 'smooth');
       }
     }
   }
 
-
   ngOnDestroy(): void {
-      this.chatService.disconnect();
-    }
+    this.chatService.disconnect();
+  }
 }

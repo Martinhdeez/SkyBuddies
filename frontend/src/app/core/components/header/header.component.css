@@ -103,6 +103,7 @@
   margin: 0;
 }
 
+
 .dropdown-menu li a {
   display: flex;
   align-items: center;
@@ -115,6 +116,8 @@
   font-weight: 500;
   text-decoration: none;
   transition: background 0.2s ease, color 0.2s ease;
+  list-style: none;
+
 }
 
 .overlay-backdrop{
@@ -134,6 +137,8 @@
   font-size: 1.1rem;
   opacity: 0.7;
   transition: opacity 0.2s ease;
+  list-style: none;
+
 }
 .dropdown-menu li a:hover .icon {
   opacity: 1;
