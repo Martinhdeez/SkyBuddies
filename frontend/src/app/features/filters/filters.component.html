@@ -67,6 +67,14 @@
       <button class="cta-btn" (click)="next()">Next</button>
     </section>
   </main>
+  <ul class="progress-dots">
+    <li *ngFor="let _ of steps; let i = index"
+        [ngClass]="{
+        'completed': i < currentStep,
+        'current':   i === currentStep
+      }">
+    </li>
+  </ul>
 
   <app-footer></app-footer>
 </div>

@@ -182,6 +182,41 @@
   transform: scale(1);
 }
 
+/* Contenedor de los dots */
+.progress-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0;
+  list-style: none;
+  z-index: 1000;
+  margin-bottom: 6rem;
+}
+
+/* Cada punto */
+.progress-dots li {
+  width: 12px;
+  height: 12px;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+/* Ya superados */
+.progress-dots li.completed {
+  background-color: #0770E3;
+  border-color: #0770E3;
+}
+
+/* El actual */
+.progress-dots li.current {
+  background-color: #fff;
+  border-color: #0770E3;
+  box-shadow: 0 0 0 3px rgba(7,112,227,0.3);
+}
+
 @media (max-width: 600px) {
   .question-text { font-size: 2rem; }
   .card { padding: 1.5rem; }

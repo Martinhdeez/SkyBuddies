@@ -16,6 +16,7 @@
         >
           {{ msg.message }}
           <div class="timestamp">{{ msg.created_at | date:'shortTime' }}</div>
+          <div class="userSender">{{ msg.sender_uid }}</div>
         </div>
       </cdk-virtual-scroll-viewport>
 

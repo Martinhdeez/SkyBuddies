@@ -7,6 +7,7 @@ import { environment } from '../../../environments/environment';
 export interface Filter {
   id: string;
   date: string;
+  user_id: string | null;
   climate: Record<'warm'|'cold'|'tempered', boolean>;
   food: Record<
     | 'vegetarian'
@@ -62,7 +63,6 @@ export interface Filter {
     | 'island',
     boolean
   >;
-  city: string;
   created_at: string;
   updated_at: string;
 }

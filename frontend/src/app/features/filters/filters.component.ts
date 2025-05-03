@@ -1,6 +1,6 @@
-// src/app/features/filters/filters.component.ts
 import {
   Component,
+  OnInit,
   AfterViewInit,
   ElementRef,
   ViewChild
@@ -11,11 +11,12 @@ import {
   trigger, transition, style, animate,
   query, stagger, state
 } from '@angular/animations';
-import { Router }      from '@angular/router';
+import { ActivatedRoute, Router }      from '@angular/router';
 import { HeaderComponent }             from '../../core/components/header/header.component';
 import { FooterComponent }             from '../../core/components/footer/footer.component';
 import { FiltersService, Filter }      from '../../core/services/filters.service';
 import {RecommendationService, RecommendCountriesPayload} from '../../core/services/recomendation.service';
+import {AuthService} from '../../core/services/auth.service';
 
 interface Step   { type: 'card' | 'options'; cat: string }
 interface Option { key: string;     label: string }
@@ -69,7 +70,7 @@ interface Option { key: string;     label: string }
     ])
   ]
 })
-export class FiltersComponent implements AfterViewInit {
+export class FiltersComponent implements OnInit, AfterViewInit {
   @ViewChild('flightPath') flightPath!: ElementRef<SVGPathElement>;
 
   categories:       string[]            = [];
@@ -86,9 +87,84 @@ export class FiltersComponent implements AfterViewInit {
   constructor(
     private filtersSvc: FiltersService,
     private recSvc:     RecommendationService,
-    private router:     Router
+    private route:      ActivatedRoute,
+    private router:     Router,
+    private authService: AuthService
   ) {}
 
+  ngOnInit() {
+    this.filterId = this.route.snapshot.paramMap.get('filter_id');
+    this.isNew     = !this.filterId || this.filterId === 'new';
+
+    if (this.isNew) {
+      this.loadFromFilter(this.createEmptyFilter());
+    } else {
+      this.filtersSvc.getFilterById(this.filterId!)
+        .subscribe({
+          next: f => this.loadFromFilter(f),
+          error: _ => {
+            this.router.navigate(['/index']);
+          }
+        });
+    }
+  }
+
+  private loadFromFilter(f: Filter) {
+    this.currentFilter = { ...f };
+
+    this.categories = Object.keys(f)
+      .filter(k=> typeof (f as any)[k] === 'object')
+      .filter(k=> !['id','created_at','updated_at','date'].includes(k));
+
+    this.steps = this.categories.flatMap(cat=>[
+      { type:'card',    cat },
+      { type:'options', cat }
+    ]);
+
+    for(const cat of this.categories) {
+      this.hoverState[cat] = 'rest';
+      const group = (f as any)[cat] as Record<string,boolean>;
+
+      this.options[cat] = Object.keys(group)
+        .map(key => ({ key, label: this.toLabel(key) }));
+
+      for(const key of Object.keys(group)) {
+        this.filterSelections[`${cat}_${key}`] = group[key];
+      }
+    }
+  }
+
+  private createEmptyFilter(): Filter {
+    const now = new Date().toISOString();
+    return {
+      id: '',
+      user_id: '',
+      date: now,
+      created_at: now,
+      updated_at: now,
+      climate:    { warm:false,cold:false,tempered:false },
+      food:       { vegetarian:false,vegan:false,gluten_free:false,
+        lactose_free:false,italian:false,mediterranean:false,
+        japanese:false,chinese:false,fast_food:false },
+      weather:    { sunny:false,rainy:false,snowy:false,windy:false,
+        stormy:false,foggy:false,cloudy:false },
+      activities: { hiking:false,swimming:false,skiing:false,surfing:false,
+        climbing:false,cycling:false,running:false,walking:false,
+        museums:false,discos:false },
+      events:     { concerts:false,festivals:false,exhibitions:false,
+        sports_events:false,local_events:false,parties:false },
+      continents: { europe:false,asia:false,north_america:false,
+        south_america:false,africa:false,oceania:false },
+      entorno:    { urban:false,rural:false,beach:false,mountain:false,
+        desert:false,forest:false,island:false }
+    };
+  }
+
+  private toLabel(key: string): string {
+    return key.split('_')
+      .map(w=> w[0].toUpperCase()+w.slice(1))
+      .join(' ');
+  }
 
   ngAfterViewInit() {
     const p = this.flightPath.nativeElement;
@@ -114,7 +190,13 @@ export class FiltersComponent implements AfterViewInit {
   }
 
   private saveFilterAndRecommend() {
-    this.currentFilter.updated_at = new Date().toISOString();
+    const now = new Date().toISOString();
+    const userId = this.authService.getUserId();
+
+    this.currentFilter.updated_at = now;
+    this.currentFilter.user_id  = userId;
+    this.currentFilter.date      = this.currentFilter.date || now;
+
     for(const cat of this.categories) {
       for(const opt of this.options[cat]) {
         (this.currentFilter as any)[cat][opt.key] =
@@ -131,6 +213,7 @@ export class FiltersComponent implements AfterViewInit {
         const payload: RecommendCountriesPayload = {
           id:           f.id,
           date:         f.date,
+          user_id:      f.user_id,
           climate:      f.climate,
           food:         f.food,
           weather:      f.weather,
@@ -138,7 +221,6 @@ export class FiltersComponent implements AfterViewInit {
           events:       f.events,
           continents:   f.continents,
           entorno:      f.entorno,
-          city:         f.city,
           created_at:   f.created_at,
           updated_at:   f.updated_at
         };

@@ -1,10 +1,4 @@
-import {
-  Component,
-  OnInit,
-  AfterViewInit,
-  OnDestroy,
-  ViewChild
-} from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild } from '@angular/core';
 import { ChatService, Message } from '../../core/services/chat.service';
 import { AuthService }   from '../../core/services/auth.service';
 import { ActivatedRoute } from '@angular/router';

@@ -39,12 +39,6 @@ export class ResetPasswordComponent {
     });
   }
 
-  ngOnInit(): void {
-    this.route.queryParamMap.subscribe(params => {
-      this.token = params.get('token');
-    });
-  }
-
   openSnackbar(message: string): void {
     this.snackbarMessage = message;
     this.showSnackbar = true;

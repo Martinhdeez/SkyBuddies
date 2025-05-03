@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import {Filter} from './filters.service';
 
 // INTERFACE THAT DEFINES THE GROUP DATA
 export interface Group {
@@ -13,12 +14,19 @@ export interface Group {
   created_at: string;
 }
 
-// INTERFACE THAT DEFINES THE GROUP DATA
-export interface ValidationError {
-  loc: (string | number)[];
-  msg: string;
-  type: string;
+
+export interface GroupRecommendation {
+  id: string;
+  name: string;
+  members: string[];
+  visibility: 'public' | 'private';
+  travel_filter_mean: Filter;
+  code: string;
+  users_travel_filter: Filter[];
+  created_at: string;
+  updated_at: string;
 }
+
 
 @Injectable({
   providedIn: 'root',
@@ -51,7 +59,7 @@ export class GroupService {
   createGroup(payload: {
     name: string;
     members: string[];
-    visibility: 'public' | 'private';
+    visibility: 'public'|'private';
   }): Observable<Group> {
     return this.http.post<Group>(this.baseUrl, payload);
   }
@@ -113,12 +121,31 @@ export class GroupService {
   /**
    * GET /group/search → Search for N groups by name
    * @param term The search term.
-   * @param n The number of groups to return.
+   * @param limit The number of groups to return.
    */
-  searchGroups(term: string, n: string): Observable<Group[]> {
+  searchGroups(term: string, limit: number): Observable<Group[]> {
     const params = new HttpParams()
       .set('search', term)
-      .set('limit', n);
+      .set('limit', limit.toString());
     return this.http.get<Group[]>(this.baseUrl, { params });
+  }
+
+  /**
+   * POST /group/recommendations → Get group recommendations
+   * @param filterMean The filter mean to use for recommendations.
+   */
+  recommendGroups(filterMean: Filter): Observable<GroupRecommendation[]> {
+    return this.http.post<GroupRecommendation[]>(
+      `${this.baseUrl}/recommendations`,
+      filterMean
+    );
+  }
+
+  /**
+   * GET /group/user/{user_id} → Get groups by user ID
+   * @param userId The ID of the user to get groups for.
+   */
+  getGroupsByUser(userId: string): Observable<Group[]> {
+    return this.http.get<Group[]>(`${this.baseUrl}/user/${userId}`);
   }
 }
