@@ -61,7 +61,16 @@ def most_popular_filters(travel_filters: List[TravelFilter]) -> MeanFilter:
                 if v:
                     filters_counter.entorno.increase_entorno_counter(k)
             
-                    
+        if travel_filter.get("eco_travel"):
+            filters_counter.increase_eco_travel_counter()    
+        else :         
+            filters_counter.increase_no_eco_travel_counter()  
+        
+        if travel_filter.get("low_cost"):
+            filters_counter.increase_low_cost_counter()
+        else :
+            filters_counter.increase_no_low_cost_counter()
+            
     return filters_counter.to_travel_filter()   
 
 
