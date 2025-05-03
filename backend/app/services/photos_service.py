@@ -3,17 +3,13 @@ from datetime import datetime
 from serpapi import GoogleSearch
 from dotenv import load_dotenv
 import os
-from pathlib import Path
 
-
-dotenv_path = Path(__file__).resolve().parent.parent / ".env"
-load_dotenv(dotenv_path)
+load_dotenv()
 api_key = os.getenv("SERPAPI_API_KEY")
 
 class PhotosService:
     def __init__(self):
-        print(f"Loaded API key: {api_key}")
-
+        pass
 
     def get_photo(self, monument: str) -> Photo:
         params = {
@@ -28,24 +24,27 @@ class PhotosService:
         try:
             search = GoogleSearch(params)
             results = search.get_dict()
-            print(results)
+            print("API Response:", results)  
             images = results.get("images_results", [])
             
             if not images:
-                raise ValueError("No images found for the monument.")
+                raise ValueError("No images found for the specified monument.")
 
             first_image = images[0]
             image_url = first_image.get("original") or first_image.get("thumbnail")
+            source_page = first_image.get("link")  
+            title = first_image.get("title")  
 
             if not image_url:
                 raise ValueError("No valid image URL found.")
 
             return Photo(
                 url=image_url,
-                monument=monument,
-                created_at=datetime.utcnow()
+                title=title or f"Image of {monument}",
+                source_page=source_page or "Unknown source",
+                scraped_at=datetime.now()
             )
 
         except Exception as e:
             print(f"Error retrieving photo: {e}")
-            return None
+            raise ValueError(f"Internal server error: {e}")
