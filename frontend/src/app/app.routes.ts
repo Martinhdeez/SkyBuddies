@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import {IndexComponent} from './features/index/index.component';
+import {RegisterComponent} from './features/auth/register/register.component';
+import {LoginComponent} from './features/auth/login/login.component';
 
 /*
   UNCOMMENT THIS LINE FOR CHECK IF THE RAILWAY IS WORKING BUT IT'S COMMENTED FOR NOT CONSUMING THE RAILWAY API
@@ -15,6 +17,8 @@ export const routes: Routes = [
    */
 
   { path: 'index', component: IndexComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'login', component: LoginComponent },
 
   // IT'S OBLIGATORY TO HAVE THIS LINE AT THE END OF THE ROUTES BECAUSE IT REDIRECTS
   // TO THE INDEX PAGE IF THE URL IS NOT FOUND
