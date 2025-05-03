@@ -1,7 +1,8 @@
+import random
 from fastapi import APIRouter, HTTPException, status
 from services.group_service import GroupService
 from db.models.group import Group
-from routers.dto.group_dto import CreateGroupDTO, MembersGroupDTO
+from routers.dto.group_dto import CreateGroupDTO, AddMembersGroupDTO, DeleteMembersGroupDTO
 from starlette.responses import JSONResponse
 from typing import List
 from db.models.travel_filter import TravelFilter
@@ -16,7 +17,7 @@ group_service = GroupService()
 
 @router.get("", response_model=list[Group])
 async def get_groups():
-    group = await group_service.get_all_groups()
+    group = await group_service.get_all_public_groups()
     return list(group) 
 
 @router.get("/{group_id}", response_model=Group)
@@ -38,22 +39,32 @@ async def get_groups_by_user_id(user_id: str) -> List[Group]:
         raise HTTPException(status_code=404, detail="No groups found for this user")
     return groups
 
-@router.post("", response_model=Group, status_code=201)
+@router.post("", status_code=201)
 async def create_group(
     group_dto: CreateGroupDTO
-) -> Group:
+):
     # Verificar si el username ya está en uso por otro usuario
     if await group_service.get_group_by_name(group_dto.name):
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="The group name already exists",
         )
-
     group_data = group_dto.model_dump()
-    group = Group(**group_data)
+    if(group_data["visibility"] == "private"):
+        while(await group_service.get_group_by_code(code)):
+            code =  random.randint(0, 99999)
+       
+    group = Group(name=group_data["name"], visibility=group_data["visibility"], code=code)
 
     group = await group_service.add_group(group)
-    return group
+    
+    if await group_service.add_members(group.id,group_data["members"], group_data["users_travel_filter"]):
+        return {
+            "message": "Group created successfully",
+        }
+    raise HTTPException(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        detail="Failed to create group",)
 
 
 @router.put("/{group_id}", response_model=Group)
@@ -97,7 +108,7 @@ async def delete_user(
 @router.post("/{group_id}/add/members", response_model=Group)
 async def add_members(
     group_id: str,
-    members_dto: MembersGroupDTO
+    members_dto: AddMembersGroupDTO
 ) -> Group:
     # 1. Buscar el grupo actual
     existing_group = await group_service.get_group_by_id(group_id)
@@ -105,7 +116,7 @@ async def add_members(
         raise HTTPException(status_code=404, detail="Group not found")
 
     # 2. Agregar miembros al grupo
-    success = await group_service.add_members(group_id, members_dto.members)
+    success = await group_service.add_members(group_id, members_dto.users_travel_filter)
     if success:
         # 3. Obtener el grupo actualizado y devolverlo
         updated_group = await group_service.get_group_by_id(group_id)
@@ -116,13 +127,14 @@ async def add_members(
 @router.post("/{group_id}/remove/members", response_model=Group)
 async def remove_members(
     group_id: str,
-    members_dto: MembersGroupDTO
+    members_dto: DeleteMembersGroupDTO
 ) -> Group:
     # 1. Buscar el grupo actual
     existing_group = await group_service.get_group_by_id(group_id)
     if not existing_group:
         raise HTTPException(status_code=404, detail="Group not found")
 
+    
 
     if await group_service.remove_members(group_id, members_dto.members):
         return await group_service.get_group_by_id(group_id)

@@ -8,6 +8,7 @@ def convert_user_to_model(user_dict: dict) -> User:
     return User(**user_dict)
 
 def convert_group_to_model(group_dict: dict) -> Group:
+    print(f"Converting group_dict to model: {group_dict}")
     return Group(**group_dict)
 
 def convert_chat_to_model(chat_dict: dict) -> Chat: 

@@ -12,10 +12,10 @@ class GroupVisibility(str, Enum):
 class Group(BaseModel):
     id: Optional[str] = Field(default=None, title="id")
     name: str
-    members: List[str]
+    members: Optional[List[str]] = Field(default=[], title="members")  # user_id
     visibility: Optional[GroupVisibility] = Field(default=GroupVisibility.PUBLIC, title="visibility")
     travel_filter_mean: Optional[TravelFilter] = Field(default=None, title="travel_filter")
+    code: Optional[str] = Field(default=None, title="travel_filter")
     users_travel_filter: Optional[List[TravelFilter]] = Field(default=[], title="users_travel_filter")
-    admins: Optional[List[str]] = Field(default=[], title="admins")
     updated_at: datetime = Field(default=datetime.now(), title="updated_at")
     created_at: datetime = Field(default=datetime.now(), title="created_at")

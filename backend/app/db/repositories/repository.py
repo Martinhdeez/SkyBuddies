@@ -37,6 +37,7 @@ class Repository:
     async def update_data(self, uid: str, update_data: dict) -> bool:
         try:
             updated_data = await self.data_collection.update_one({"id": uid}, {"$set": update_data})
+            print(f"[DEBUG] Dumped data: {updated_data}\n\n\n [DEBUG] Values: {updated_data.values()}")
             return updated_data.modified_count > 0
         except Exception as e:
             print(f"Error updating data: {e}")

@@ -49,17 +49,20 @@ class GroupService:
     async def get_group_by_id(self, uid: str) -> Optional[Group]:
         return await self.group_repository.get_data(uid)
 
-    async def get_all_groups(self) -> List[Group]:
-        return await self.group_repository.get_all_data()
+    async def get_all_public_groups(self) -> List[Group]:
+        return await self.group_repository.get_all_public_groups()
 
+    async def get_group_by_code(self, code: str) -> Optional[Group]:
+        return await self.group_repository.get_group_by_code(code)
+    
     async def update_group(self, uid: str, update_data: dict):
         return await self.group_repository.update_data(uid, update_data)
 
     async def delete_group(self, uid: str):
         return await self.group_repository.delete_data(uid)
 
-    async def add_members(self, uid: str, members: List[str]) -> bool:
-        return await self.group_repository.add_members(uid, members)
+    async def add_members(self, uid: str,members: List[str], preferences: List[TravelFilter]) -> bool:
+        return await self.group_repository.add_members(uid, members, preferences)
 
     async def remove_members(self, uid: str, members: List[str]) -> bool:
         return await self.group_repository.remove_members(uid, members)
