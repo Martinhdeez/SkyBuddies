@@ -2,6 +2,7 @@ from pydantic import EmailStr
 from db.repositories.repository import Repository
 from db.repositories.filter_repository import FilterRepository
 from datetime import datetime, timedelta
+from db.models.travel_filter import TravelFilter
 
 class FilterService:
     def __init__(self): 
@@ -13,7 +14,7 @@ class FilterService:
     async def update_filter(self, uid: str, update_data: dict):
         return await self.repository.update_data(uid, update_data)
     
-    async def get_filter_by_id(self, uid: str):
+    async def get_filter_by_id(self, uid: str) -> TravelFilter:
         return await self.repository.get_data(uid)
     
     async def delete_filter_by_id(self, uid: str):

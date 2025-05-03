@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from pydantic import BaseModel
 import uuid
 from typing import List
@@ -28,12 +29,12 @@ class Repository:
         try:
             data = await self.data_collection.find_one({"id": uid})
             if not data:
-                return None
+                raise HTTPException(status_code=404, detail="Internal server error")
             return self.convert_helper(data)
         except Exception as e:
             print(f"Error retrieving data: {e}")
-            return None
-
+            raise HTTPException(status_code=500, detail="Internal server error")
+        
     async def update_data(self, uid: str, update_data: dict) -> bool:
         try:
             updated_data = await self.data_collection.update_one({"id": uid}, {"$set": update_data})
