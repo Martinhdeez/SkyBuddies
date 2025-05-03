@@ -2,8 +2,8 @@ from pydantic import BaseModel
 import uuid
 from typing import List, Optional
 from db.repositories.repository import Repository
-from db.client import routes_collection
-from helpers.dict2model import convert_route_to_model
+from db.client import fly_routes_collection
+from helpers.dict2model import convert_fly_route_to_model
 from datetime import datetime
 import requests
 from dotenv import load_dotenv
@@ -11,14 +11,14 @@ import os
 from fastapi import HTTPException
 
 load_dotenv()
-skyscanner_key = os.getenv("API_KEY_SKY")
+api_key = os.getenv("API_KEY_SKY")
 
-class RoutesRepository(Repository):
+class FlyRoutesRepository(Repository):
     def __init__(self):
-        super().__init__(routes_collection, convert_route_to_model)
+        super().__init__(fly_routes_collection, convert_fly_route_to_model)
         self.base_url = "https://partners.api.skyscanner.net/apiservices/v3/flights/live/search/create"
 
-    def get_best_route(
+    def get_best_fly_route(
             self,
             origin_city: str,
             destination_city: str,
@@ -29,7 +29,7 @@ class RoutesRepository(Repository):
         
         headers = {
             "Content-Type": "application/json",
-            "x-api-key": skyscanner_key
+            "x-api-key": api_key
         }
 
         body = {

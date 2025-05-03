@@ -11,6 +11,13 @@ router = APIRouter(
 
 filter_service = FilterService()
 
+@router.get("", response_model=list[TravelFilter])
+async def get_all_filters():
+    filters = await filter_service.get_all_filters()
+    if not filters:
+        raise HTTPException(status_code=404, detail="No filters found")
+    return filters
+
 @router.get("/{filter_id}", response_model=TravelFilter)
 async def get_filter(filter_id: str):
     return await filter_service.get_filter_by_id(filter_id)
