@@ -14,27 +14,35 @@ class GroupRepository(Repository):
         group = await self.data_collection.find_one({"name": name})
         return self.convert_helper(group) if group else None
 
-async def add_members(self, id: str, members: List[str]) -> bool:
-    group = await self.data_collection.find_one({"id": id})
-    if not group:
-        return False
+    async def add_members(self, id: str, members: List[str]) -> bool:
+        group = await self.data_collection.find_one({"id": id})
+        if not group:
+            return False
 
-    await self.data_collection.update_one(
-        {"id": id},
-        {"$push": {"members": {"$each": members}}}
-    )
-    return True
+        # Filtrar miembros que ya están en el grupo
+        existing_members = set(group.get("members", []))
+        new_members = [member for member in members if member not in existing_members]
 
-async def remove_members(self, id: str, members: List[str]) -> bool:
-    group = await self.data_collection.find_one({"id": id})
-    if not group:
-        return False
+        if not new_members:
+            return True  # No hay nuevos miembros para agregar
 
-    await self.data_collection.update_one(
-        {"id": id},
-        {"$pull": {"members": {"$in": members}}}
-    )
-    return True
+        # Agregar solo los nuevos miembros
+        await self.data_collection.update_one(
+            {"id": id},
+            {"$push": {"members": {"$each": new_members}}}
+        )
+        return True
 
-    
+    async def remove_members(self, id: str, members: List[str]) -> bool:
+        group = await self.data_collection.find_one({"id": id})
+        if not group:
+            return False
+
+        await self.data_collection.update_one(
+            {"id": id},
+            {"$pull": {"members": {"$in": members}}}
+        )
+        return True
+
+
 

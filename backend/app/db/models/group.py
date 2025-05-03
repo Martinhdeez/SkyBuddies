@@ -5,8 +5,8 @@ from enum import Enum
 from uuid import UUID
 
 class Group(BaseModel):
-    id: UUID
+    id: Optional[str] = Field(default=None, title="id")
     name: str
     members: List[str]
-    created_at: datetime
-    updated_at: datetime
+    updated_at: datetime = Field(default=datetime.now(), title="updated_at")
+    created_at: datetime = Field(default=datetime.now(), title="created_at")
