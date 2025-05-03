@@ -10,7 +10,7 @@ async def send_reset_email(email: str, token: str):
     msg["From"] = smtp_config["email"]
     msg["To"] = email
     
-    reset_link = f"http://localhost:8000/reset-password?token={token}"
+    reset_link = f"http://localhost:4200/reset-password?token={token}"
     
     msg.set_content(
         f"Para restablecer tu contraseña, haz clic en el siguiente enlace:\n\n{reset_link}\n\n"
