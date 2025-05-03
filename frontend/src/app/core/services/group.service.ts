@@ -148,4 +148,10 @@ export class GroupService {
   getGroupsByUser(userId: string): Observable<Group[]> {
     return this.http.get<Group[]>(`${this.baseUrl}/user/${userId}`);
   }
+
+  
+  getGroupByCode(code: string): Observable<GroupRecommendation> {
+    return this.http.get<GroupRecommendation>(`${this.baseUrl}/by-code/${code}`);
+  }
+  
 }
