@@ -1,36 +1,56 @@
 <header class="site-header">
-  <div class="container">
-    <div class="logo">
-      <a routerLink="/index">SKYBUDDIES</a>
+    <div class="container">
+        <div class="logo"><a routerLink="/index">SKYBUDDIES</a></div>
+
+        <nav class="nav">
+            <ul>
+                <li *ngIf="authService.isAuthenticated(); else showLogin" class="profile-dropdown">
+                    <a href="#" (click)="toggleDropdown($event)" #trigger="cdkOverlayOrigin" cdkOverlayOrigin>
+                        <img
+                                ngSrc="assets/images/header/profile.svg"
+                                alt="Profile"
+                                class="profile-icon"
+                                width="25" height="25"
+                        />
+                    </a>
+
+                    <ng-template
+                            cdk-connected-overlay
+                            [cdkConnectedOverlayOrigin]="trigger"
+                            [cdkConnectedOverlayOpen]="isDropdownOpen"
+                            [cdkConnectedOverlayHasBackdrop]="true"
+                            (backdropClick)="isDropdownOpen = false"
+                            [cdkConnectedOverlayPositions]="positions"
+                            [cdkConnectedOverlayOffsetY]="8"
+                    >
+                        <div class="overlay-backdrop">
+                        <ul class="dropdown-menu">
+                            <li class="section-header">Mi Cuenta</li>
+                            <li><a [routerLink]="['/users', authService.getUserId()]">
+                                <span class="icon">👤</span> Personal Data
+                            </a></li>
+                            <li><a routerLink="/settings">
+                                <span class="icon">⚙️</span> Extra-Function
+                            </a></li>
+
+                            <li class="section-header">Acciones</li>
+                            <li class="logout">
+                                <a href="#" (click)="logoutAndReload()">
+                                    <span class="icon">🚪</span> Logout
+                                </a>
+                            </li>
+                        </ul>
+                        </div>
+                    </ng-template>
+                </li>
+
+                <ng-template #showLogin>
+                    <li><a routerLink="/login">LOGIN</a></li>
+                </ng-template>
+
+                <li><a routerLink="/groups">GROUPS</a></li>
+                <li><a href="https://help…">CONTACT</a></li>
+            </ul>
+        </nav>
     </div>
-    <nav class="nav">
-      <ul>
-        <li *ngIf="authService.isAuthenticated(); else showLogin" class="profile-dropdown">
-          <a href="javascript:void(0)" (click)="toggleDropdown()">
-            <img ngSrc="../../../../assets/images/header/profile.svg" alt="Profile" class="profile-icon" height="16"
-                 width="16"/>
-          </a>
-          <ul class="dropdown-menu" [ngClass]="{'open': isDropdownOpen}">
-            <li><a [routerLink]="['/users', authService.getUserId()]">PERSONAL DATA</a></li>
-            <li><a routerLink="/settings">EXTRA-FUNCTION</a></li>
-            <li class="logout"><a href="javascript:void(0)" (click)="logoutAndReload()">LOGOUT</a></li>
-          </ul>
-        </li>
-        <ng-template #showLogin>
-          <li>
-            <a routerLink="/login">LOGIN</a>
-          </li>
-        </ng-template>
-
-        <li>
-          <a routerLink="/groups">GROUPS</a>
-        </li>
-
-        <li>
-          <a href="https://help.skyscanner.net/hc/es?skyCurrency=currency_eur&skyLanguage=lang_es&skyMarket=es_skyscanner&_gl=1*1kfnx3e*_gcl_au*NDA5NzY1MDY4LjE3MzkxODMwOTQ.*FPAU*NDA5NzY1MDY4LjE3MzkxODMwOTQ." target="_blank" rel="noopener noreferrer">CONTACT</a>
-        </li>
-
-      </ul>
-    </nav>
-  </div>
 </header>

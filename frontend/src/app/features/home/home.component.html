@@ -64,7 +64,7 @@
       @fadeSlide
       class="question-wrapper"
     >
-      <h2 class="question-text">¿VIAJAS SOLO O ACOMPAÑADO?</h2>
+      <h2 class="question-text">DO YOU TRAVEL ALONE?</h2>
 
       <div class="cards-grid">
         <div
@@ -75,8 +75,8 @@
           (click)="onSelectSolo()"
         >
           <div class="card-icon">🚶‍♂️</div>
-          <h3 class="card-title">Solo</h3>
-          <p class="card-desc">Disfruta de tu propia aventura sin ataduras.</p>
+          <h3 class="card-title">Alone</h3>
+          <p class="card-desc">Enjoy your own adventure.</p>
         </div>
 
         <div
@@ -87,8 +87,8 @@
           (click)="onSelectAccompanied()"
         >
           <div class="card-icon">👥</div>
-          <h3 class="card-title">Acompañado / Grupo</h3>
-          <p class="card-desc">Comparte la experiencia con amigos o familia.</p>
+          <h3 class="card-title">Group</h3>
+          <p class="card-desc">Share the experience with your family and friends.</p>
         </div>
       </div>
     </section>
@@ -100,7 +100,9 @@
       class="question-wrapper"
     >
       <h2 class="question-text">
-        ¿Tienes un grupo privado o quieres unirte a uno público?
+        DO YOU HAVE A PRIVATE GROUP,
+        <br />
+        OR YOU WOULD LIKE TO JOIN A PUBLIC GROUP?
       </h2>
 
       <div class="cards-grid">
@@ -111,8 +113,8 @@
           (mouseleave)="setHover('private','rest')"
         >
           <div class="card-icon">🔒</div>
-          <h3 class="card-title">Grupo Privado</h3>
-          <p class="card-desc">Introduce tu código para unirte.</p>
+          <h3 class="card-title">Private Group</h3>
+          <p class="card-desc">Enter your code to join.</p>
           <div *ngIf="showGroupInput" class="input-group">
             <input
               type="text"
@@ -120,7 +122,7 @@
               [(ngModel)]="groupCode"
             />
             <button class="cta-btn" (click)="onJoinGroup()">
-              Unirse
+              Join
             </button>
           </div>
         </div>
@@ -133,8 +135,8 @@
           (click)="onSelectPublic()"
         >
           <div class="card-icon">🌐</div>
-          <h3 class="card-title">Grupo Público</h3>
-          <p class="card-desc">Explora y únete a grupos abiertos.</p>
+          <h3 class="card-title">Public Group</h3>
+          <p class="card-desc">Explore and join open groups.</p>
         </div>
       </div>
     </section>

@@ -3,32 +3,38 @@
 
   <div class="chat-wrapper">
     <div class="chat-box">
-      <!-- Lista de mensajes -->
-      <div class="messages" id="messageContainer" (scroll)="onScroll()">
-        <div
-          *ngFor="let msg of messages"
-          [ngClass]="{'message-bubble': true, 'sent': msg.sender_uid === userId, 'received': msg.sender_uid !== userId}">
-          {{ msg.message }}
-          <div class="timestamp">{{ msg.created_at | date:'shortTime' }}</div>
-        </div>
+      <!-- Header -->
+      <div class="chat-header">
+        Chat del grupo {{ groupId }}
       </div>
 
-      <!-- Input de mensaje -->
+      <!-- Mensajes (scroll virtual) -->
+      <cdk-virtual-scroll-viewport
+        class="messages-viewport"
+        itemSize="80"
+      >
+        <div
+          *cdkVirtualFor="let msg of messages"
+          class="message-bubble"
+          [ngClass]="msg.sender_uid === userId ? 'sent' : 'received'"
+        >
+          {{ msg.message }}
+          <div class="timestamp">
+            {{ msg.created_at | date:'shortTime' }}
+          </div>
+        </div>
+      </cdk-virtual-scroll-viewport>
+
+      <!-- Input -->
       <div class="input-container">
         <input
           type="text"
           [(ngModel)]="newMessage"
           (keydown.enter)="sendMessage()"
-          placeholder="Escribe un mensaje..." />
-        <button (click)="sendMessage()">Enviar</button>
+          placeholder="Type a message..."
+        />
+        <button (click)="sendMessage()">Send</button>
       </div>
-
-      <!-- Botón flotante para hacer scroll al final -->
-      <button *ngIf="showScrollButton"
-              class="scroll-to-bottom"
-              (click)="scrollToBottom(true)">
-        ⬇
-      </button>
     </div>
   </div>
 

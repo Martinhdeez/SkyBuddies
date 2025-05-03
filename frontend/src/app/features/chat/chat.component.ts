@@ -1,56 +1,69 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  OnDestroy,
+  ViewChild
+} from '@angular/core';
 import { ChatService, Message } from '../../core/services/chat.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
+import { ActivatedRoute } from '@angular/router';
 import { HeaderComponent } from '../../core/components/header/header.component';
 import { FooterComponent } from '../../core/components/footer/footer.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import {
+  ScrollingModule,
+  CdkVirtualScrollViewport
+} from '@angular/cdk/scrolling';
 
 @Component({
   selector: 'app-chat',
   standalone: true,
   imports: [
-    CommonModule,      // trae NgIf, NgForOf, NgClass, DatePipe, etc.
+    CommonModule,
     FormsModule,
+    ScrollingModule,
     HeaderComponent,
-    FooterComponent,
+    FooterComponent
   ],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
-export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild('messageContainer') messageContainer!: ElementRef<HTMLDivElement>;
+export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild(CdkVirtualScrollViewport) viewport!: CdkVirtualScrollViewport;
 
-  userId = '';
-  groupId = '';
-  chatId = '';
+  userId    = '';
+  groupId   = '';
+  chatId    = '';
   messages: Message[] = [];
   newMessage = '';
-  showScrollButton = false;
 
   constructor(
     private chatService: ChatService,
-    private route: ActivatedRoute,
-    private router: Router      // si usas router.navigate en template
+    private authService: AuthService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    const stored = localStorage.getItem('userId');
+    const stored = this.authService.getUserId();
     if (!stored) {
       console.warn('No se encontró userId');
       return;
     }
     this.userId = stored;
-
     this.route.params.subscribe(p => {
       this.groupId = p['groupId'];
       this.initChat();
     });
   }
 
-  ngAfterViewInit(): void { /** aquí ya puedes acceder a messageContainer **/ }
+  ngAfterViewInit(): void {
+    // Forzamos a CDK a recalcular la altura del viewport ahora que el CSS está aplicado
+    setTimeout(() => this.viewport.checkViewportSize(), 100);
+  }
 
-  initChat() {
+  initChat(): void {
     this.chatService.createChat(this.groupId).subscribe({
       next: res => {
         this.chatId = res.chat_id;
@@ -65,19 +78,21 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  loadMessages() {
+  loadMessages(): void {
     this.chatService.getAllMessages(this.chatId).subscribe({
       next: all => {
         this.messages = all;
-        this.scrollToBottom(true);
+        // un tick para que lleguen y luego scroll
+        setTimeout(() => this.scrollToBottom(true));
       },
       error: err => console.error('Error cargando mensajes:', err)
     });
   }
 
-  sendMessage() {
+  sendMessage(): void {
     const text = this.newMessage.trim();
     if (!text) return;
+
     const temp: Message = {
       id: crypto.randomUUID(),
       chat_id: this.chatId,
@@ -86,33 +101,54 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     };
-    this.chatService.sendMessage({ chat_id: this.chatId, sender_uid: this.userId, message: text });
+
+    // Enviar mensaje al servicio
+    this.chatService.sendMessage({
+      chat_id: this.chatId,
+      sender_uid: this.userId,
+      message: text
+    });
+
+    // Añadir el mensaje temporal para actualizar la UI
+    this.messages.push(temp);
+
+    // Vaciar el input
+    this.newMessage = '';
+
+    // Actualizar el scroll para el nuevo mensaje
+    setTimeout(() => {
+      this.scrollToBottom(true);
+    }, 50); // Ajusta el tiempo si es necesario
+
+
+
+  this.chatService.sendMessage({
+      chat_id: this.chatId,
+      sender_uid: this.userId,
+      message: text
+    });
+
     this.messages.push(temp);
     this.newMessage = '';
     this.scrollToBottom(true);
   }
 
-  scrollToBottom(force = false) {
-    setTimeout(() => {
-      const el = this.messageContainer.nativeElement;
-      const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 100;
-      if (force || nearBottom) el.scrollTop = el.scrollHeight;
-    }, 50);
+  scrollToBottom(force = false): void {
+    const count = this.messages.length;
+    if (!this.viewport) return;
+
+    if (force) {
+      this.viewport.scrollToIndex(count - 1, 'smooth');
+    } else {
+      const rendered = this.viewport.getRenderedRange();
+      if (count - 1 >= rendered.end - 1) {
+        this.viewport.scrollToIndex(count - 1, 'smooth');
+      }
+    }
   }
 
-  onScroll() {
-    const el = this.messageContainer.nativeElement;
-    this.showScrollButton = el.scrollHeight - el.scrollTop - el.clientHeight > 150;
-  }
-
-  deleteMessage(id: string) {
-    this.chatService.deleteMessage(id).subscribe({
-      next: () => this.messages = this.messages.filter(m => m.id !== id),
-      error: e => console.error('Error borrando mensaje:', e)
-    });
-  }
 
   ngOnDestroy(): void {
-    this.chatService.disconnect();
-  }
+      this.chatService.disconnect();
+    }
 }

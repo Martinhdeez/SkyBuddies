@@ -113,6 +113,9 @@
   cursor: pointer;
   transition: background 0.3s ease, transform 0.3s ease;
   margin: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .cta-btn:hover {
   background: #23153c !important;

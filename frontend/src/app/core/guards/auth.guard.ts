@@ -12,11 +12,11 @@ export class AuthGuard implements CanActivate {
   canActivate(next: ActivatedRouteSnapshot): boolean {
     const token = this.authService.getToken();
     if (!token) {
-      this.router.navigate(['/auth/login']).then(() =>
+      this.router.navigate(['/login']).then(() =>
         console.log('[AuthGuard] No token found, redirecting to login.')
       );
       return false;
     }
-    return true; // ✅ necesario para cubrir ambos casos
+    return true;
   }
 }
