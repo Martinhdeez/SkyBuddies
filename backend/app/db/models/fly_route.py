@@ -14,19 +14,3 @@ class FlyRoute(BaseModel):
     eco_emissions: Optional[float] = Field(None, description="Eco emissions in kilograms")
     stops: Optional[int] = Field(default=0, description="Number of stops in the route")
     duration_minutes: Optional[int] = Field(default=None, description="Duration of the route in minutes")
-
-    class Config:
-        schema_extra = {
-            "example": {
-                "id": "123e4567-e89b-12d3-a456-426614174000",
-                "origin": "JFK",
-                "destination": "LAX",
-                "departure_time": "2025-05-10T15:00:00",
-                "arrival_time": "2025-05-10T18:00:00",
-                "price": 250.0,
-                "airline": "Delta Airlines",
-                "eco_emissions": 120.5,
-                "stops": 0,
-                "duration_minutes": 180
-            }
-        }

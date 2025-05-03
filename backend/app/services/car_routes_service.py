@@ -15,7 +15,6 @@ class CarRoutesService:
         drop_off_time: datetime,
         low_cost: bool,
         best_eco: bool = False,
-        driver_age: int = 30
     ) -> Optional[CarRoute]:
         
         try:
@@ -25,8 +24,7 @@ class CarRoutesService:
                 pick_up_time=pick_up_time,
                 drop_off_time=drop_off_time,
                 low_cost=low_cost,
-                best_eco=best_eco,
-                driver_age=driver_age
+                best_eco=best_eco
             )
 
             if not best_route_data:
