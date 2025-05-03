@@ -1,33 +1,21 @@
 <app-header></app-header>
 
 <main class="groups-page">
-  <section class="content">
+  <section class="content" @listAnim>
     <div class="page-header">
       <h1>YOUR GROUPS</h1>
       <div class="controls">
         <input
           type="text"
           [formControl]="searchControl"
-          placeholder="Searching groups..."
+          placeholder="Search groups..."
           class="search-input"
         />
-        <button class="btn-add" (click)="toggleNewForm()">＋ New Group</button>
+        <button class="btn-add" (click)="goToCreate()">＋ New Group</button>
       </div>
     </div>
 
-    <div *ngIf="showNewForm" @formSlide class="new-group-form">
-      <form [formGroup]="newGroupForm" (ngSubmit)="submitNewGroup()">
-        <input formControlName="name" placeholder="Group's name" />
-        <select formControlName="visibility">
-          <option value="public">Public</option>
-          <option value="private">Private</option>
-        </select>
-        <input formControlName="members" placeholder="Members (coma-separated)" />
-        <button type="submit" [disabled]="newGroupForm.invalid">Create Group</button>
-      </form>
-    </div>
-
-    <div class="groups-grid" @listAnim>
+    <div class="groups-grid">
       <div
         *ngFor="let g of groups"
         class="group-card"
@@ -40,8 +28,8 @@
         <p>{{ g.members.length }} miembro(s)</p>
         <span class="visibility">{{ g.visibility | titlecase }}</span>
       </div>
-      <div *ngIf="groups.length===0" class="no-results">
-        Not groups found.
+      <div *ngIf="groups.length === 0" class="no-results">
+        No groups found.
       </div>
     </div>
   </section>

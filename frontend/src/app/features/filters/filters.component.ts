@@ -16,6 +16,7 @@ import { HeaderComponent }             from '../../core/components/header/header
 import { FooterComponent }             from '../../core/components/footer/footer.component';
 import { FiltersService, Filter }      from '../../core/services/filters.service';
 import {RecommendationService, RecommendCountriesPayload} from '../../core/services/recomendation.service';
+import {AuthService} from '../../core/services/auth.service';
 
 interface Step   { type: 'card' | 'options'; cat: string }
 interface Option { key: string;     label: string }
@@ -87,7 +88,8 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     private filtersSvc: FiltersService,
     private recSvc:     RecommendationService,
     private route:      ActivatedRoute,
-    private router:     Router
+    private router:     Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -136,10 +138,10 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     const now = new Date().toISOString();
     return {
       id: '',
+      user_id: '',
       date: now,
       created_at: now,
       updated_at: now,
-      city: '',
       climate:    { warm:false,cold:false,tempered:false },
       food:       { vegetarian:false,vegan:false,gluten_free:false,
         lactose_free:false,italian:false,mediterranean:false,
@@ -187,11 +189,14 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     }
   }
 
-
   private saveFilterAndRecommend() {
     const now = new Date().toISOString();
+    const userId = this.authService.getUserId();
 
     this.currentFilter.updated_at = now;
+    this.currentFilter.user_id  = userId;
+    this.currentFilter.date      = this.currentFilter.date || now;
+
     for(const cat of this.categories) {
       for(const opt of this.options[cat]) {
         (this.currentFilter as any)[cat][opt.key] =
@@ -208,6 +213,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
         const payload: RecommendCountriesPayload = {
           id:           f.id,
           date:         f.date,
+          user_id:      f.user_id,
           climate:      f.climate,
           food:         f.food,
           weather:      f.weather,
@@ -215,7 +221,6 @@ export class FiltersComponent implements OnInit, AfterViewInit {
           events:       f.events,
           continents:   f.continents,
           entorno:      f.entorno,
-          city:         f.city,
           created_at:   f.created_at,
           updated_at:   f.updated_at
         };
