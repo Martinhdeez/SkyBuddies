@@ -3,7 +3,6 @@
 <section class="user-detail-section" *ngIf="user" @fadeSlide>
   <div class="user-card">
 
-    <!-- Header con avatar y nombre -->
     <div class="card-header">
       <div class="avatar-container">
         <img src="assets/images/user/user-icon.svg" alt="Avatar" class="avatar" />
@@ -19,7 +18,6 @@
       </div>
     </div>
 
-    <!-- Detalles del usuario -->
     <div class="card-details" @inputsAnim>
       <div class="detail-item">
         <label class="detail-label">Username</label>
@@ -58,7 +56,6 @@
       </div>
     </div>
 
-    <!-- Botones de acción -->
     <div class="action-buttons">
       <button
         class="btn edit"
@@ -94,7 +91,6 @@
         ↩️ Back
       </button>
 
-      <!-- Nuevo botón Delete Account -->
       <button
         class="btn delete"
         (click)="deleteAccount()"

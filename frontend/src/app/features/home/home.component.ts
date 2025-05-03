@@ -58,14 +58,12 @@ export class HomeComponent implements AfterViewInit {
 
   onSelectSolo()        { this.router.navigate(['/filters']).then(r => console.log('Navigated:', r)); }
   onSelectAccompanied() { this.currentQuestion = 2; }
-  onSelectPrivate()     { this.showGroupInput = true; }
   onJoinGroup() {
     if (this.groupCode.trim()) {
       this.router.navigate(['/join-private'], {queryParams: {code: this.groupCode}}).then(r => console.log('Navigated:', r));
      }
   }
   onSelectPublic()      { this.router.navigate(['/public-groups']).then(r => console.log('Navigated:', r)); }
-  // Gestión del hover
   setHover(card: 'solo'|'accompanied'|'private'|'public', state: 'rest' | 'hover') {
     this.hoverState[card] = state;
   }

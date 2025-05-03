@@ -64,9 +64,8 @@ import { GroupService, Group } from '../../core/services/group.service';
   ]
 })
 export class GroupComponent implements OnInit {
-  /** Todos los grupos recibidos */
   private allGroups: Group[] = [];
-  /** Los 3 que voy mostrando */
+
   groups: Group[] = [];
   hoverState: Record<string,'rest'|'hover'> = {};
   showNewForm = false;
@@ -80,20 +79,17 @@ export class GroupComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Inicializo el form de creación
     this.newGroupForm = this.fb.group({
       name:       ['', Validators.required],
       visibility: ['public' as 'public'|'private', Validators.required],
       members:    ['']
     });
 
-    // Cargo todos los grupos una sola vez
     this.svc.getGroups().subscribe(list => {
       this.allGroups = list;
-      this.applyFilter(''); // muestra todos inicialmente
+      this.applyFilter('');
     });
 
-    // Me suscribo al buscador
     this.searchControl.valueChanges.pipe(
       debounceTime(200),
       distinctUntilChanged()
@@ -102,7 +98,6 @@ export class GroupComponent implements OnInit {
     });
   }
 
-  /** Filtra localmente y actualiza hoverState */
   private applyFilter(term: string) {
     const q = term.trim().toLowerCase();
     const filtered = q
@@ -110,7 +105,7 @@ export class GroupComponent implements OnInit {
       : [...this.allGroups];
 
     this.groups = filtered.slice(0, 20);
-    this.hoverState = {};              // reinicio estados
+    this.hoverState = {};
     this.groups.forEach(g => this.hoverState[g.id] = 'rest');
   }
 
@@ -131,7 +126,6 @@ export class GroupComponent implements OnInit {
 
     this.svc.createGroup({ name, visibility, members: membersArr })
       .subscribe(g => {
-        // lo añadimos también a allGroups
         this.allGroups.unshift(g);
         this.applyFilter(this.searchControl.value || '');
         this.newGroupForm.reset({ name:'', visibility:'public', members:'' });

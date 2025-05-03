@@ -5,7 +5,6 @@
   padding: 0;
 }
 
-/* Layout principal */
 .chat-container {
   display: flex;
   flex-direction: column;
@@ -18,7 +17,6 @@ app-footer {
   flex-shrink: 0;
 }
 
-/* Centrado */
 .chat-wrapper {
   flex: 1;
   display: flex;
@@ -26,7 +24,6 @@ app-footer {
   align-items: center;
 }
 
-/* Card de chat */
 .chat-box {
   width: 450px;
   height: 600px;
@@ -36,10 +33,9 @@ app-footer {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   overflow: hidden;
-  min-height: 0; /* NECESARIO para que 1fr funcione correctamente */
+  min-height: 0;
 }
 
-/* Header fijo */
 .chat-header {
   padding: 16px;
   font-size: 1.25rem;
@@ -47,18 +43,16 @@ app-footer {
   border-bottom: 1px solid #eee;
 }
 
-/* Virtual scroll viewport */
 .messages-viewport {
-  height: calc(100% - 80px); /* Ajusta para que no solape con el input */
+  height: calc(100% - 80px);
   width: 100%;
   overflow: auto;
   background: #f8f9fa;
   display: block;
 }
 
-/* Burbujas con altura fija para itemSize */
 .message-bubble {
-  height: 80px; /* Obligatorio si usas itemSize="80" */
+  height: 80px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -90,7 +84,6 @@ app-footer {
   text-align: right;
 }
 
-/* Input fijo */
 .input-container {
   display: flex;
   padding: 12px 16px;
@@ -133,7 +126,6 @@ app-footer {
   transform: translateY(-2px);
 }
 
-/* Animación fadeIn */
 @keyframes fadeIn {
   from {
     opacity: 0;

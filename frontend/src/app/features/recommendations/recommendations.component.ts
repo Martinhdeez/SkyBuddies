@@ -1,4 +1,3 @@
-// src/app/features/recommendations/recommendations.component.ts
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
@@ -7,7 +6,7 @@ import {
 } from '@angular/animations';
 import { HeaderComponent } from '../../core/components/header/header.component';
 import { FooterComponent } from '../../core/components/footer/footer.component';
-import { CommonModule, NgForOf, NgIf } from '@angular/common';
+import { CommonModule, NgForOf } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 @Component({
@@ -16,7 +15,6 @@ import { RouterModule } from '@angular/router';
   imports: [
     CommonModule,
     NgForOf,
-    NgIf,
     RouterModule,
     HeaderComponent,
     FooterComponent
@@ -50,7 +48,7 @@ export class RecommendationsComponent implements OnInit {
 
   ngOnInit() {
     const state = history.state as any;
-    // aquí esperamos que state.recommended sea string[]
+
     if (Array.isArray(state.recommended)) {
       this.recommendations = state.recommended;
     } else {

@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { FooterComponent } from '../../../core/components/footer/footer.component';
-// import { HeaderComponent } from '../../../core/components/header/header.component';
 import { AuthService, LoginRequest, LoginResponse } from '../../../core/services/auth.service';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';

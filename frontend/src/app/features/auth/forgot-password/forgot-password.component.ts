@@ -44,7 +44,6 @@ export class ForgotPasswordComponent {
     if (this.forgotPasswordForm.valid) {
       const email = this.forgotPasswordForm.value.email;
 
-      // Si el formulario es válido, ejecuta el servicio de forgotPassword
       if (email) {
         this.authService.forgotPassword({ email }).pipe(
           catchError(error => {

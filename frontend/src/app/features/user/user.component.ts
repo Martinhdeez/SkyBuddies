@@ -1,7 +1,6 @@
 import {
   Component,
   OnInit,
-  ViewEncapsulation
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule }           from '@angular/common';

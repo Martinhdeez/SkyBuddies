@@ -1,7 +1,6 @@
 // src/app/features/filters/filters.component.ts
 import {
   Component,
-  OnInit,
   AfterViewInit,
   ElementRef,
   ViewChild
@@ -12,7 +11,7 @@ import {
   trigger, transition, style, animate,
   query, stagger, state
 } from '@angular/animations';
-import { ActivatedRoute, Router }      from '@angular/router';
+import { Router }      from '@angular/router';
 import { HeaderComponent }             from '../../core/components/header/header.component';
 import { FooterComponent }             from '../../core/components/footer/footer.component';
 import { FiltersService, Filter }      from '../../core/services/filters.service';
@@ -70,10 +69,9 @@ interface Option { key: string;     label: string }
     ])
   ]
 })
-export class FiltersComponent implements OnInit, AfterViewInit {
+export class FiltersComponent implements AfterViewInit {
   @ViewChild('flightPath') flightPath!: ElementRef<SVGPathElement>;
 
-  // Datos dinámicos tras cargar el filter
   categories:       string[]            = [];
   steps:            Step[]              = [];
   currentStep       = 0;
@@ -88,98 +86,11 @@ export class FiltersComponent implements OnInit, AfterViewInit {
   constructor(
     private filtersSvc: FiltersService,
     private recSvc:     RecommendationService,
-    private route:      ActivatedRoute,
     private router:     Router
   ) {}
 
-  ngOnInit() {
-    // 1) Leemos el filter_id de la ruta; si es "new" creamos uno nuevo
-    this.filterId = this.route.snapshot.paramMap.get('filter_id');
-    this.isNew     = !this.filterId || this.filterId === 'new';
-
-    if (this.isNew) {
-      // Cargamos directamente el objeto vacío
-      this.loadFromFilter(this.createEmptyFilter());
-    } else {
-      // Obtenemos del backend
-      this.filtersSvc.getFilterById(this.filterId!)
-        .subscribe({
-          next: f => this.loadFromFilter(f),
-          error: _ => {
-            // Si no existe, vamos a “new”
-            this.router.navigate(['/filters/new']);
-          }
-        });
-    }
-  }
-
-  /** Rellena todo según el Filter que venga del backend (o el vacío) */
-  private loadFromFilter(f: Filter) {
-    this.currentFilter = { ...f };
-
-    // Detectamos dinámicamente las categorías (propiedades objeto)
-    this.categories = Object.keys(f)
-      .filter(k=> typeof (f as any)[k] === 'object')
-      .filter(k=> !['id','created_at','updated_at','date'].includes(k));
-
-    // Construimos el wizard steps: card → options → card → …
-    this.steps = this.categories.flatMap(cat=>[
-      { type:'card',    cat },
-      { type:'options', cat }
-    ]);
-
-    // Inicializamos hover, opciones y selecciones
-    for(const cat of this.categories) {
-      this.hoverState[cat] = 'rest';
-      const group = (f as any)[cat] as Record<string,boolean>;
-
-      // Extraemos las opciones (key + label)
-      this.options[cat] = Object.keys(group)
-        .map(key => ({ key, label: this.toLabel(key) }));
-
-      // Rellenamos el estado de las checkboxes
-      for(const key of Object.keys(group)) {
-        this.filterSelections[`${cat}_${key}`] = group[key];
-      }
-    }
-  }
-
-  /** Crea un Filter vacío con todas las claves a false */
-  private createEmptyFilter(): Filter {
-    const now = new Date().toISOString();
-    return {
-      id: '',
-      date: now,
-      created_at: now,
-      updated_at: now,
-      city: '',
-      climate:    { warm:false,cold:false,tempered:false },
-      food:       { vegetarian:false,vegan:false,gluten_free:false,
-        lactose_free:false,italian:false,mediterranean:false,
-        japanese:false,chinese:false,fast_food:false },
-      weather:    { sunny:false,rainy:false,snowy:false,windy:false,
-        stormy:false,foggy:false,cloudy:false },
-      activities: { hiking:false,swimming:false,skiing:false,surfing:false,
-        climbing:false,cycling:false,running:false,walking:false,
-        museums:false,discos:false },
-      events:     { concerts:false,festivals:false,exhibitions:false,
-        sports_events:false,local_events:false,parties:false },
-      continents: { europe:false,asia:false,north_america:false,
-        south_america:false,africa:false,oceania:false },
-      entorno:    { urban:false,rural:false,beach:false,mountain:false,
-        desert:false,forest:false,island:false }
-    };
-  }
-
-  /** Convierte snake_case → Title Case */
-  private toLabel(key: string): string {
-    return key.split('_')
-      .map(w=> w[0].toUpperCase()+w.slice(1))
-      .join(' ');
-  }
 
   ngAfterViewInit() {
-    // Calculamos la longitud del path para la animación
     const p = this.flightPath.nativeElement;
     const len = p.getTotalLength();
     p.style.setProperty('--path-length', `${len}`);
@@ -202,16 +113,8 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     }
   }
 
-  /**
-   * 1) Actualiza o crea el filter en backend
-   * 2) Con el objeto resultante, llama a /recommend-countries
-   * 3) Navega a /recommendations pasando el string puro
-   */
   private saveFilterAndRecommend() {
-    const now = new Date().toISOString();
-
-    // 1) Actualizamos timestamps y los valores
-    this.currentFilter.updated_at = now;
+    this.currentFilter.updated_at = new Date().toISOString();
     for(const cat of this.categories) {
       for(const opt of this.options[cat]) {
         (this.currentFilter as any)[cat][opt.key] =
@@ -219,7 +122,6 @@ export class FiltersComponent implements OnInit, AfterViewInit {
       }
     }
 
-    // 2) Guardamos o creamos en backend
     const op$ = this.isNew
       ? this.filtersSvc.createFilter(this.currentFilter)
       : this.filtersSvc.updateFilter(this.filterId!, this.currentFilter);
