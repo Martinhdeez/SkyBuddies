@@ -67,6 +67,7 @@ class Entorno(BaseModel):
 
 class TravelFilter(BaseModel):
     id: Optional[str] = Field(default=None, title="id")
+    date: datetime = Field(default=datetime.now(), title="date")
     climate: Optional[Climate] = Field(default=None, title="climate")
     food: Optional[Food] = Field(default=None, title="food")
     weather: Optional[Weather] = Field(default=None, title="weather")
