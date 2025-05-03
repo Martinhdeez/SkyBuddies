@@ -82,8 +82,8 @@ class GroupRepository(Repository):
             {"id": id},
             {
                 "$push": {
-                    "members": {"$each": members},
-                    "users_travel_filter": {"$each": preferences},
+                    "members": {"$each": [member.model_dump() if hasattr(member, 'model_dump') else member for member in members]},
+                    "users_travel_filter": {"$each": [filter.model_dump() for filter in preferences]},
                 },
                 "$set": {"updated_at": datetime.now()},
             },

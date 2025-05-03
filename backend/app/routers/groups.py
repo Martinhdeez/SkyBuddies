@@ -54,7 +54,7 @@ async def create_group(
         code = random.randint(0, 99999)
         while(await group_service.get_group_by_code(code)):
             code =  random.randint(0, 99999)
-        group = Group(name=group_data["name"], visibility=group_data["visibility"], code=code)
+        group = Group(name=group_data["name"], visibility=group_data["visibility"], code=str(code))
     else:   
         group = Group(name=group_data["name"], visibility=group_data["visibility"])
 
@@ -107,22 +107,21 @@ async def delete_user(
     raise HTTPException(status_code=400, detail="Group not found")
 
 
-@router.post("/{group_id}/add/members", response_model=Group)
+@router.post("/{group_id}/add/members")
 async def add_members(
     group_id: str,
     members_dto: AddMembersGroupDTO
-) -> Group:
+):
     # 1. Buscar el grupo actual
     existing_group = await group_service.get_group_by_id(group_id)
     if not existing_group:
         raise HTTPException(status_code=404, detail="Group not found")
 
     # 2. Agregar miembros al grupo
-    success = await group_service.add_members(group_id, members_dto.users_travel_filter)
-    if success:
-        # 3. Obtener el grupo actualizado y devolverlo
-        updated_group = await group_service.get_group_by_id(group_id)
-        return updated_group  # Esto debe cumplir con el modelo Group
+    if await group_service.add_members(group_id, members_dto.members, members_dto.users_travel_filter):
+        return {
+            "message": "Members added successfully"
+        }
     else:
         raise HTTPException(status_code=400, detail="Failed to add members")
     
