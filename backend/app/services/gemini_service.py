@@ -46,7 +46,7 @@ class GeminiService:
             countries = [country.strip() for country in countries if country]  
             countries = [country.split(". ")[1] if ". " in country else country for country in countries]
             
-            return countries
+            return countries[1:]
         except Exception as e:
             print(f"Error parsing response: {e}")
             return []
