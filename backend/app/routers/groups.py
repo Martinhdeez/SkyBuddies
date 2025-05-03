@@ -4,6 +4,7 @@ from db.models.group import Group
 from routers.dto.group_dto import CreateGroupDTO, MembersGroupDTO
 from starlette.responses import JSONResponse
 from typing import List
+from db.models.travel_filter import TravelFilter
 
 router = APIRouter(
     prefix="/groups",
@@ -22,6 +23,20 @@ async def get_groups():
 async def get_group(group_id: str):
     return await group_service.get_group_by_id(group_id)
 
+
+@router.post("/recommendations/{user_id}", response_model=list[Group])
+async def get_recomendations(
+    user_id: str,
+    travel_filter: TravelFilter
+) -> list[Group]:
+    return await group_service.get_recommended_groups_for_user(user_id, travel_filter)
+
+@router.get("/user/{user_id}", response_model=list[Group])
+async def get_groups_by_user_id(user_id: str) -> List[Group]:
+    groups = await group_service.get_groups_by_user_id(user_id)
+    if not groups:
+        raise HTTPException(status_code=404, detail="No groups found for this user")
+    return groups
 
 @router.post("", response_model=Group, status_code=201)
 async def create_group(
