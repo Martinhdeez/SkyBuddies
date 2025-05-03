@@ -18,7 +18,7 @@ class ChatMessage(BaseModel):
 
 class Chat(BaseModel):
     id: Optional[str] = Field(default=None, title="id")
-    sender_uid : Optional[str]
+    sender_uid : Optional[str] = Field(default=None, title="sender_uid") 
     group_id: str
     messages : Optional[List[str]] = Field(default=[], title="messages") # id_message
     updated_at: Optional[datetime] = Field(default=datetime.now(), title="updated_at")
