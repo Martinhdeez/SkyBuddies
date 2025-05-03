@@ -6,7 +6,7 @@ async def send_reset_email(email: str, token: str):
     smtp_config = configure_smtp() 
     
     msg = EmailMessage()
-    msg["Subject"] = "🔒 Restablecimiento de contraseña - Hogaris"
+    msg["Subject"] = "🔒 Restablecimiento de contraseña - SkyBuddies"
     msg["From"] = smtp_config["email"]
     msg["To"] = email
     
@@ -19,7 +19,7 @@ async def send_reset_email(email: str, token: str):
     )
     
     msg.add_alternative(f"""
-    <html>
+    <htmlcontraseñacontraseña>
         <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
             <div style="max-width: 500px; background: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
                 <h2 style="color: #333; text-align: center;">🔒 Restablecimiento de Contraseña</h2>
@@ -38,7 +38,7 @@ async def send_reset_email(email: str, token: str):
                     Si no solicitaste este cambio, puedes ignorar este mensaje. Tu seguridad es importante para nosotros.  
                 </p>
                 <p style="color: #888; font-size: 12px; text-align: center;">
-                    © 2025 Hogaris. Todos los derechos reservados.
+                    © 2025 SkyBuddies. Todos los derechos reservados.
                 </p>
             </div>
         </body>

@@ -13,7 +13,6 @@ class ChatMessageService:
         return await self.repository.get_data(message_id)
 
     async def modify_message(self, message_id: str, message: dict) -> bool:
-
         return await self.repository.update_data(message_id, message)
 
     async def get_all_messages_by_chat_id(self, chat_id: str) -> List[ChatMessage]:

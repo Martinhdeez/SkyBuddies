@@ -11,11 +11,11 @@ class ChatService:
         chat_model.created_at = datetime.now()
         return await self.repository.add_data(chat_model)
 
-    async def get_chat_by_uids(self, uid1: str, uid2: str) -> Chat | None:
-        return await self.repository.get_chat_by_uids(uid1, uid2)
+    async def get_chat_by_uid(self, uid: str) -> Chat | None:
+        return await self.repository.get_chat_by_uid(uid)
 
-    async def get_chat_by_uids_and_property_id(self, uid1: str, uid2: str, property_id: str):
-        return await self.repository.get_chat_by_uids_and_property_id(uid1, uid2, property_id)
+    async def get_chat_by_uid_and_group_id(self, uid: str, group_id: str):
+        return await self.repository.get_chat_by_uid_and_group_id(uid, group_id)
 
     async def get_all_chats_by_id(self, uid: str):
         return await self.repository.get_all_chats_by_uid(uid)

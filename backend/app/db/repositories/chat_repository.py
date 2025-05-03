@@ -10,13 +10,10 @@ class ChatRepository(RepositoryPattern):
     def __init__(self):
         super().__init__(chats_collection, convert_chat_to_model)
 
-    async def get_chat_by_uids(self, uid1: str, uid2: str) -> Chat | None:
+    async def get_chat_by_uid(self, uid: str) -> Chat | None:
         chat = await self.data_collection.find_one(
             {
-                "$or": [
-                 {"sender_uid": uid1, "receiver_uid": uid2},
-                 {"receiver_uid": uid1, "sender_uid": uid2}
-                ]
+                "sender_uid": uid
             }
         )
         if not chat:
@@ -24,18 +21,15 @@ class ChatRepository(RepositoryPattern):
 
         return self.convert_helper(chat)
 
-    async def get_chat_by_uids_and_property_id(self, uid1: str, uid2: str, property_id: str) -> Chat | None:
+    async def get_chat_by_uids_and_group_id(self, uid: str, group_id: str) -> Chat | None:
         chat = await self.data_collection.find_one(
             {
                 "$and": [
                     {
-                        "$or": [
-                            {"sender_uid": uid1, "receiver_uid": uid2},
-                            {"receiver_uid": uid1, "sender_uid": uid2}
-                        ]
+                        "sender_uid": uid
                     },
                     {
-                        "property_id": property_id
+                        "group_id": group_id 
                     }
 
                 ]
@@ -48,16 +42,14 @@ class ChatRepository(RepositoryPattern):
 
 
     async def get_all_chats_by_uid(self, uid: str) -> List[Chat]: 
-        return self.data_collection.find({"$or": [
-            {"sender_uid": uid},
-            {"receiver_uid": uid}
-        ]}).sort("updated_at", -1)
+        return self.data_collection.find({
+            "sender_uid": uid
+        }).sort("updated_at", -1)
 
     async def get_n_chats_by_uid(self, uid: str, n: int, incr: int) -> List[Chat]: 
-        return self.data_collection.find({"$or": [
-            {"sender_uid": uid},
-            {"receiver_uid": uid}
-        ]}).sort("updated_at", -1).limit(n*incr)
+        return self.data_collection.find({
+            "sender_uid": uid
+        }).sort("updated_at", -1).limit(n*incr)
 
     async def add_message(self, chat_id: str, message_id: str):
         await self.data_collection.update_one(

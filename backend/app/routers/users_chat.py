@@ -20,27 +20,20 @@ ws_factory = WSConnectionFactory()
 message_service = ChatMessageService()
 chat_service = ChatService()
 
-@router.post("/{receiver_id}/properties/{property_id}")
+@router.post("/groups/{group_id}")
 async def create_chat(
-    receiver_id: str,
-    property_id: str,
-    sender: Annotated[User, Depends(get_current_user)]
+    group_id: str,
 ):
-    sender_id = sender.id
 
-    if await chat_service.get_chat_by_uids(sender_id, receiver_id):
-        raise HTTPException(status_code=409, detail="This chat already exists")
-
-    chat_model = Chat(sender_uid=sender_id, receiver_uid=receiver_id, property_id=property_id)
+    chat_model = Chat(group_id=group_id)
     chat_db = await chat_service.add_chat(chat_model)
     return chat_db
 
 
-@router.websocket("/{receiver_id}/properties/{property_id}")
+@router.websocket("/groups/{group_id}")
 async def ws_chat(
         websocket: WebSocket,
-        receiver_id: str,
-        property_id: str
+        group_id: str
 ):
     token = websocket.headers.get("Authorization")
     if not token:
@@ -56,13 +49,12 @@ async def ws_chat(
 
 
     sender_id = user.id
-    chat = await chat_service.get_chat_by_uids_and_property_id(sender_id, receiver_id, property_id)
+    chat = await chat_service.get_chat_by_uids_and_group_id(sender_id, group_id)
     if not chat:
         chat = await chat_service.add_chat(
             Chat(
             sender_uid=sender_id,
-            receiver_uid=receiver_id,
-            property_id=property_id
+            group_id=group_id
             )
         )
 
@@ -74,7 +66,7 @@ async def ws_chat(
             data = await websocket.receive_text()
             message = data.strip()
 
-            chat_message = ChatMessage(sender_uid=sender_id, message=message, receiver_uid=receiver_id, chat_id=chat_id)
+            chat_message = ChatMessage(sender_uid=sender_id, message=message, chat_id=chat_id)
             message = await message_service.add_message(chat_message)
             await chat_service.add_message_to_chat(chat_id, message.id)
 
