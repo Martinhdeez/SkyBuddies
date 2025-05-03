@@ -3,7 +3,7 @@ from typing import Optional
 from datetime import datetime
 from uuid import UUID
 
-class Route(BaseModel):
+class FlyRoute(BaseModel):
     id: Optional[UUID] = Field(default=None, description="Unique identifier for the route")
     origin: str = Field(..., description="Origin city or airport IATA code")
     destination: str = Field(..., description="Destination city or airport IATA code")
