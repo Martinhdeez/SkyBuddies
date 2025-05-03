@@ -17,6 +17,12 @@ class FilterService:
     async def get_filter_by_id(self, uid: str) -> TravelFilter:
         return await self.repository.get_data(uid)
     
+    async def get_one_filter(self):
+        filters = await self.repository.get_all_data()
+        if not filters:
+            return None
+        return filters[0]
+    
     async def delete_filter_by_id(self, uid: str):
         return await self.repository.delete_data(uid)
     

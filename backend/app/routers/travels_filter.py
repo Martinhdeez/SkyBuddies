@@ -22,6 +22,13 @@ async def get_all_filters():
 async def get_filter(filter_id: str):
     return await filter_service.get_filter_by_id(filter_id)
 
+@router.get("/one")
+async def get_one_filter():
+    filter = await filter_service().get_one_filter()
+    if not filter:
+        raise HTTPException(status_code=404, detail="No filters found")
+    return filter
+
 @router.get("", response_model=list[TravelFilter])
 async def get_filters():
     filters = await filter_service.get_all_filters()
