@@ -27,7 +27,7 @@ class GeminiService:
             return None
     
     def _build_prompt(self, filters: dict) -> str:
-        prompt = "Based on the following filters, recommend 10 countries to visit in order of best match:\n"
+        prompt = "Based on the following filters, recommend 11 countries to visit in order of best match:\n"
         for key, value in filters.items(): 
             prompt += f"- {key}: {value}\n"
         prompt += "\nPlease provide the recommendations in the following format, with a number before each country: "

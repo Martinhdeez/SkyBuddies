@@ -34,19 +34,18 @@ class CarRoutesRepository(Repository):
             "x-api-key": api_key
         }
 
-        # Cuerpo de la solicitud para la API de Skyscanner
+    
         body = {
-            "market": "US",  # Mercado
-            "locale": "en-US",  # Idioma
-            "currency": "USD",  # Moneda
-            "pickUpDate": pick_up_time.strftime("%Y-%m-%dT%H:%M:%S"),  # Fecha y hora de recogida
-            "dropOffDate": drop_off_time.strftime("%Y-%m-%dT%H:%M:%S"),  # Fecha y hora de devolución
-            "pickUpLocation": {"iata": origin_city},  # Ubicación de recogida
-            "dropOffLocation": {"iata": destination_city} if destination_city else None,  # Ubicación de devolución
-            "driverAge": driver_age  # Edad del conductor
+            "market": "US",  
+            "locale": "en-US",  
+            "currency": "USD", 
+            "pickUpDate": pick_up_time.strftime("%Y-%m-%dT%H:%M:%S"),  
+            "dropOffDate": drop_off_time.strftime("%Y-%m-%dT%H:%M:%S"),  
+            "pickUpLocation": {"iata": origin_city}, 
+            "dropOffLocation": {"iata": destination_city} if destination_city else None,  
+            "driverAge": driver_age  
         }
 
-        # Enviar solicitud al endpoint /create
         create_response = requests.post(self.base_url_create, json=body, headers=headers)
         if create_response.status_code != 200:
             raise HTTPException(status_code=create_response.status_code, detail=create_response.text)
@@ -56,7 +55,6 @@ class CarRoutesRepository(Repository):
         if not session_token:
             raise HTTPException(status_code=500, detail="Failed to create car hire search session.")
 
-        # Enviar solicitud al endpoint /poll
         poll_url = f"{self.base_url_poll}/{session_token}"
         poll_response = requests.post(poll_url, headers=headers)
         if poll_response.status_code != 200:
@@ -68,7 +66,6 @@ class CarRoutesRepository(Repository):
         if not quotes:
             raise HTTPException(status_code=404, detail="No car hire quotes found matching the criteria")
 
-        # Procesar las cotizaciones y devolver la mejor opción
         best_quote = None
         best_price = float("inf")
 
