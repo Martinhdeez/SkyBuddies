@@ -1,42 +1,51 @@
-import requests
-from bs4 import BeautifulSoup
 from db.models.photo import Photo
 from datetime import datetime
+from serpapi import GoogleSearch
+from dotenv import load_dotenv
+import os
+from pathlib import Path
+
+
+dotenv_path = Path(__file__).resolve().parent.parent / ".env"
+load_dotenv(dotenv_path)
+api_key = os.getenv("SERPAPI_API_KEY")
 
 class PhotosService:
     def __init__(self):
-        self.search_engine_url = "https://www.google.com/search"  
-        self.headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-        }
+        print(f"Loaded API key: {api_key}")
 
-    def get_photos(self, monument: str) -> list[Photo]:
+
+    def get_photo(self, monument: str) -> Photo:
         params = {
-            "q": f"{monument} tourist",
-            "tbm": "isch"  
+            "q": monument,
+            "tbm": "isch",
+            "hl": "en",
+            "gl": "us",  
+            "engine": "google_images",
+            "api_key": api_key
         }
 
         try:
-            response = requests.get(self.search_engine_url, headers=self.headers, params=params)
-            response.raise_for_status()  
+            search = GoogleSearch(params)
+            results = search.get_dict()
+            print(results)
+            images = results.get("images_results", [])
+            
+            if not images:
+                raise ValueError("No images found for the monument.")
 
-            soup = BeautifulSoup(response.text, "html.parser")
-            image_elements = soup.find_all("img")  
+            first_image = images[0]
+            image_url = first_image.get("original") or first_image.get("thumbnail")
 
-            photos = []
-            for img in image_elements[:10]:  
-                img_url = img.get("src")
-                if img_url:
-                    photo = Photo(
-                        url=img_url,
-                        title=f"Image of {monument}",
-                        source_page=response.url,
-                        scraped_at=datetime.now()
-                    )
-                    photos.append(photo)
+            if not image_url:
+                raise ValueError("No valid image URL found.")
 
-            return photos
+            return Photo(
+                url=image_url,
+                monument=monument,
+                created_at=datetime.utcnow()
+            )
 
         except Exception as e:
-            print(f"Error during web scraping: {e}")
-            return []
+            print(f"Error retrieving photo: {e}")
+            return None
