@@ -67,6 +67,7 @@ class Entorno(BaseModel):
 
 class TravelFilter(BaseModel):
     id: Optional[str] = Field(default=None, title="id")
+<<<<<<< HEAD
     date: datetime = Field(default=datetime.now(), title="date")
     climate: Optional[Climate] = Field(default=None, title="climate")
     food: Optional[Food] = Field(default=None, title="food")
@@ -76,6 +77,16 @@ class TravelFilter(BaseModel):
     continents: Optional[Continents] = Field(default=None, title="continents")
     entorno: Optional[Entorno] = Field(default=None, title="entorno")
     city: Optional[str] = Field(default=None, title="city")
+=======
+    user_id: str
+    climate: Optional[Climate] = Field(default=Climate(), title="climate")
+    food: Optional[Food] = Field(default=Food(), title="food")
+    weather: Optional[Weather] = Field(default=Weather(), title="weather")
+    activities: Optional[Activities] = Field(default=Activities(), title="activities")
+    events: Optional[Events] = Field(default=Events(), title="events")
+    continents: Optional[Continents] = Field(default=Continents(), title="continents")
+    entorno: Optional[Entorno] = Field(default=Entorno(), title="entorno")
+>>>>>>> martin
     updated_at: datetime = Field(default=datetime.now(), title="updated_at")
     created_at: datetime = Field(default=datetime.now(), title="created_at")
 
