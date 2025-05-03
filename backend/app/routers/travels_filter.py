@@ -15,6 +15,11 @@ filter_service = FilterService()
 async def get_filter(filter_id: str):
     return await filter_service.get_filter_by_id(filter_id)
 
+@router.get("", response_model=list[TravelFilter])
+async def get_filters():
+    filters = await filter_service.get_all_filters()
+    return list(filters)
+
 @router.post("", response_model=TravelFilter, status_code=201)
 async def create_filter(filter_dto: TravelFilter):  
     filter = FilterService()  # Create the service instance
@@ -35,7 +40,7 @@ async def update_filter(filter_dto: TravelFilter, filter_id: str):
 
 @router.delete("/{filter_id}")
 async def delete_filter(filter_id: str):
-    success = await filter_service.delete_filter_by_id(filter_id)
+    success = await filter_service.delete_filter(filter_id)
     if success:
         return JSONResponse(
             content={"message": "filter deleted successfully"},
