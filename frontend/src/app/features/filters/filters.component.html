@@ -1,0 +1,80 @@
+<div class="home-container">
+  <svg class="flight-bg" viewBox="0 0 2000 600" preserveAspectRatio="none"
+       xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <path #flightPath id="flightPath"
+            d="M -100,450 C 300,100 800,500 1200,200 S 2100,450 2500,350"
+            fill="none"/>
+    </defs>
+    <use href="#flightPath" stroke="rgba(255,255,255,0.3)" stroke-width="2"
+         stroke-dasharray="2250" stroke-dashoffset="2250">
+      <animate attributeName="stroke-dashoffset" from="2250" to="0"
+               dur="12.5s" begin="0s" calcMode="linear" fill="freeze"/>
+    </use>
+    <image href="/assets/plane.svg" width="48" height="48" transform="translate(-24,-24)">
+      <animateMotion dur="15s" begin="0s" fill="freeze" rotate="auto">
+        <mpath href="#flightPath"/>
+      </animateMotion>
+    </image>
+  </svg>
+
+  <app-header></app-header>
+
+  <main class="content">
+    <section *ngIf="stepType==='card'" @fadeSlide class="question-wrapper">
+      <div class="cards-grid">
+        <div
+          class="card"
+          [@cardHover]="hoverState[stepCategory]"
+          (mouseenter)="setHover(stepCategory,'hover')"
+          (mouseleave)="setHover(stepCategory,'rest')"
+          (click)="next()"
+        >
+          <div class="card-icon">🔍</div>
+          <h3 class="card-title">{{ stepCategory | titlecase }}</h3>
+          <p class="card-desc">Tap to select {{ stepCategory }}</p>
+        </div>
+      </div>
+      <button class="cta-btn" (click)="next()">Next</button>
+    </section>
+
+    <section *ngIf="stepType==='options'" @fadeSlide class="question-wrapper">
+      <button class="back-btn" (click)="back()">← Back</button>
+
+      <div class="cards-grid" @stepAnim>
+        <label
+          class="checkbox-wrapper"
+          *ngFor="let opt of options[stepCategory]">
+          <input
+            type="checkbox"
+            name="{{stepCategory}}_{{opt.key}}"
+            [(ngModel)]="filterSelections[stepCategory + '_' + opt.key]"
+            class="checkbox-input"
+          />
+
+          <span class="checkbox-custom">
+            <svg viewBox="0 0 24 24" class="checkbox-icon">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </span>
+
+          <div class="card-inner">
+            <h3 class="card-title">{{ opt.label }}</h3>
+          </div>
+        </label>
+      </div>
+
+      <button class="cta-btn" (click)="next()">Next</button>
+    </section>
+  </main>
+  <ul class="progress-dots">
+    <li *ngFor="let _ of steps; let i = index"
+        [ngClass]="{
+        'completed': i < currentStep,
+        'current':   i === currentStep
+      }">
+    </li>
+  </ul>
+
+  <app-footer></app-footer>
+</div>

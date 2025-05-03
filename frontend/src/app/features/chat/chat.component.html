@@ -1,0 +1,35 @@
+<div class="chat-container">
+  <app-header></app-header>
+  <div class="chat-wrapper">
+    <div class="chat-box">
+      <div class="chat-header">Group chat {{ groupId }}</div>
+
+      <cdk-virtual-scroll-viewport
+        class="messages-viewport"
+        itemSize="80"
+        [@listAnim]="messages.length"
+      >
+        <div
+          *cdkVirtualFor="let msg of messages"
+          class="message-bubble"
+          [ngClass]="msg.sender_uid === userId ? 'sent' : 'received'"
+        >
+          {{ msg.message }}
+          <div class="timestamp">{{ msg.created_at | date:'shortTime' }}</div>
+          <div class="userSender">{{ msg.sender_uid }}</div>
+        </div>
+      </cdk-virtual-scroll-viewport>
+
+      <div class="input-container">
+        <input
+          type="text"
+          [(ngModel)]="newMessage"
+          (keydown.enter)="sendMessage()"
+          placeholder="Type a message..."
+        />
+        <button (click)="sendMessage()">Send</button>
+      </div>
+    </div>
+  </div>
+  <app-footer></app-footer>
+</div>

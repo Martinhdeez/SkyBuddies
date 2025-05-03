@@ -1,0 +1,38 @@
+<app-header></app-header>
+
+<main class="groups-page">
+  <section class="content" @listAnim>
+    <div class="page-header">
+      <h1>YOUR GROUPS</h1>
+      <div class="controls">
+        <input
+          type="text"
+          [formControl]="searchControl"
+          placeholder="Search groups..."
+          class="search-input"
+        />
+        <button class="btn-add" (click)="goToCreate()">＋ New Group</button>
+      </div>
+    </div>
+
+    <div class="groups-grid">
+      <div
+        *ngFor="let g of groups"
+        class="group-card"
+        [@cardHover]="hoverState[g.id]"
+        (mouseenter)="onCardEnter(g.id)"
+        (mouseleave)="onCardLeave(g.id)"
+        [routerLink]="['/groups', g.id]"
+      >
+        <h2>{{ g.name }}</h2>
+        <p>{{ g.members.length }} miembro(s)</p>
+        <span class="visibility">{{ g.visibility | titlecase }}</span>
+      </div>
+      <div *ngIf="groups.length === 0" class="no-results">
+        No groups found.
+      </div>
+    </div>
+  </section>
+</main>
+
+<app-footer></app-footer>

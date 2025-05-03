@@ -29,7 +29,7 @@ async def get_filters():
 
 @router.post("", response_model=TravelFilter, status_code=201)
 async def create_filter(filter_dto: TravelFilter):  
-    filter = FilterService()  # Create the service instance
+    filter = FilterService()  
     return await filter_service.add_filter(filter_dto)
 
 @router.put("/{filter_id}", response_model=TravelFilter)  # Adjusted to return TravelFilter

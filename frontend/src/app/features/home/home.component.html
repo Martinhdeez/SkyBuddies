@@ -1,0 +1,146 @@
+<div class="home-container">
+  <svg
+    class="flight-bg"
+    viewBox="0 0 2000 600"
+    preserveAspectRatio="none"
+    xmlns="http://www.w3.org/2000/svg"
+    style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none"
+  >
+    <!-- DEFINE THE FLIGHT PATH (IN 'S')-->
+    <defs>
+      <path
+        id="flightPath"
+        d="M -100,450
+         C 300,100 800,500 1200,200
+         S 2100,450 2500,350"
+        class="flight-path"
+        fill="none"
+      />
+    </defs>
+
+    <!-- THE FLIGHT PATH THAT WILL BE DRAW -->
+    <use
+      href="#flightPath"
+      stroke="rgba(255,255,255,0.3)"
+      stroke-width="2"
+      stroke-dasharray="2250"
+      stroke-dashoffset="2250"
+    >
+      <animate
+        attributeName="stroke-dashoffset"
+        from="2250"
+        to="0"
+        dur="12.5s"
+        begin="0s"
+        calcMode="linear"
+        fill="freeze"
+      />
+    </use>
+
+    <!--THE IMAGE OF THE PLANE THAT WILL MOVE ALONG THE PATH-->
+    <image
+      href="/assets/plane.svg"
+      width="48"
+      height="48"
+      transform="translate(-24,-24)"
+    >
+    <animateMotion
+      dur="15s"
+      begin="0s"
+      fill="freeze"
+      rotate="auto"
+    >
+      <mpath href="#flightPath" />
+    </animateMotion>
+    </image>
+  </svg>
+
+  <app-header></app-header>
+
+  <main class="content">
+    <!-- FIRST QUESTION -->
+    <section
+      *ngIf="currentQuestion === 1"
+      @fadeSlide
+      class="question-wrapper"
+    >
+      <h2 class="question-text">DO YOU TRAVEL ALONE?</h2>
+
+      <div class="cards-grid">
+        <div
+          class="card"
+          [@cardHover]="hoverState['solo']"
+          (mouseenter)="setHover('solo','hover')"
+          (mouseleave)="setHover('solo','rest')"
+          (click)="onSelectSolo()"
+        >
+          <div class="card-icon">🚶‍♂️</div>
+          <h3 class="card-title">Alone</h3>
+          <p class="card-desc">Enjoy your own adventure.</p>
+        </div>
+
+        <div
+          class="card"
+          [@cardHover]="hoverState['accompanied']"
+          (mouseenter)="setHover('accompanied','hover')"
+          (mouseleave)="setHover('accompanied','rest')"
+          (click)="onSelectAccompanied()"
+        >
+          <div class="card-icon">👥</div>
+          <h3 class="card-title">Group</h3>
+          <p class="card-desc">Share the experience with your family and friends.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECOND QUESTION -->
+    <section
+      *ngIf="currentQuestion === 2"
+      @fadeSlide
+      class="question-wrapper"
+    >
+      <h2 class="question-text">
+        DO YOU HAVE A PRIVATE GROUP,
+        <br />
+        OR YOU WOULD LIKE TO JOIN A PUBLIC GROUP?
+      </h2>
+
+      <div class="cards-grid">
+        <div
+          class="card"
+          [@cardHover]="hoverState['private']"
+          (mouseenter)="setHover('private','hover')"
+          (mouseleave)="setHover('private','rest')"
+        >
+          <div class="card-icon">🔒</div>
+          <h3 class="card-title">Private Group</h3>
+          <p class="card-desc">Enter your code to join.</p>
+          <div *ngIf="showGroupInput" class="input-group">
+            <input
+              type="text"
+              placeholder="Código de grupo"
+              [(ngModel)]="groupCode"
+            />
+            <button class="cta-btn" (click)="onJoinGroup()">
+              Join
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="card"
+          [@cardHover]="hoverState['public']"
+          (mouseenter)="setHover('public','hover')"
+          (mouseleave)="setHover('public','rest')"
+          (click)="onSelectPublic()"
+        >
+          <div class="card-icon">🌐</div>
+          <h3 class="card-title">Public Group</h3>
+          <p class="card-desc">Explore and join open groups.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <app-footer></app-footer>
+</div>
