@@ -25,12 +25,11 @@ async def get_group(group_id: str):
     return await group_service.get_group_by_id(group_id)
 
 
-@router.post("/recommendations/{user_id}", response_model=list[Group])
+@router.post("/recommendations", response_model=list[Group])
 async def get_recomendations(
-    user_id: str,
     travel_filter: TravelFilter
 ) -> list[Group]:
-    return await group_service.get_recommended_groups_for_user(user_id, travel_filter)
+    return await group_service.get_recommended_groups_for_user(travel_filter.user_id, travel_filter, 1)
 
 @router.get("/user/{user_id}", response_model=list[Group])
 async def get_groups_by_user_id(user_id: str) -> List[Group]:

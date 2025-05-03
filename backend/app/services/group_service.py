@@ -77,13 +77,9 @@ class GroupService:
 
         # Comparar las preferencias del usuario con las de cada grupo
         for group in groups:
-            group_filter_data = group.get("average_preferences")
-            if not group_filter_data:
-                continue  # Si el grupo no tiene preferencias promedio, lo ignoramos
-
-            # Convertir las preferencias del grupo a un TravelFilter y luego a un diccionario plano
-            group_filter = TravelFilter(**group_filter_data)
-            group_vector = flatten_travel_filter(group_filter)
+            group_filter_data = group.travel_filter_mean
+        
+            group_vector = flatten_travel_filter(group_filter_data)
 
             # Calcular la distancia (similitud) entre las preferencias del usuario y las del grupo
             distance = hamming_distance(user_vector, group_vector)
