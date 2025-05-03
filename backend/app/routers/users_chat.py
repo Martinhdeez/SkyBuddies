@@ -30,10 +30,10 @@ async def create_chat(
     return chat_db
 
 
-@router.websocket("/groups/{group_id}")
+@router.websocket("/{chat_id}")
 async def ws_chat(
         websocket: WebSocket,
-        group_id: str
+        chat_id: str
 ):
     token = websocket.headers.get("Authorization")
     if not token:
@@ -49,14 +49,7 @@ async def ws_chat(
 
 
     sender_id = user.id
-    chat = await chat_service.get_chat_by_uids_and_group_id(sender_id, group_id)
-    if not chat:
-        chat = await chat_service.add_chat(
-            Chat(
-            sender_uid=sender_id,
-            group_id=group_id
-            )
-        )
+    chat = await chat_service.get_chat_by_chat_id(chat_id)
 
     chat_id = chat.id
     await ws_factory.connect(chat_id, websocket)

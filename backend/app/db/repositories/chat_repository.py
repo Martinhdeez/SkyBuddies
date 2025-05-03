@@ -20,18 +20,10 @@ class ChatRepository(Repository):
 
         return self.convert_helper(chat)
 
-    async def get_chat_by_uids_and_group_id(self, uid: str, group_id: str) -> Chat | None:
+    async def get_chat_by_chat_id(self, chat_id: str) -> Chat | None:
         chat = await self.data_collection.find_one(
             {
-                "$and": [
-                    {
-                        "sender_uid": uid
-                    },
-                    {
-                        "group_id": group_id 
-                    }
-
-                ]
+                "id": chat_id
             }
         )
         if not chat:
