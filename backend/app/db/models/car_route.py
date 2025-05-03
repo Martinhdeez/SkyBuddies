@@ -18,23 +18,3 @@ class CarRoute(BaseModel):
     transmission: Optional[str] = Field(None, description="Transmission type (e.g., Automatic, Manual)")
     fuel_type: Optional[str] = Field(None, description="Fuel type (e.g., Petrol, Diesel, Electric)")
     deep_link: Optional[str] = Field(None, description="Deep link to book the car hire")
-
-    class Config:
-        schema_extra = {
-            "example": {
-                "id": "123e4567-e89b-12d3-a456-426614174001",
-                "origin": "MIA",
-                "destination": "MIA",
-                "pick_up_time": "2025-12-15T10:00:00",
-                "drop_off_time": "2025-12-20T10:00:00",
-                "price": 150.0,
-                "vendor": "Hertz",
-                "agent": "Skyscanner",
-                "car_type": "SUV",
-                "seats": 5,
-                "doors": 4,
-                "transmission": "Automatic",
-                "fuel_type": "Petrol",
-                "deep_link": "https://www.skyscanner.com/carhire/booking-link"
-            }
-        }
