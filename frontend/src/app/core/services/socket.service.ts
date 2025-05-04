@@ -10,8 +10,8 @@ export class WebSocketService {
   private socket$: WebSocketSubject<any>;
 
  constructor() {
-    this.socket$ = webSocket('ws://${{environment.apiURL}}/ws/chat');
-  }
+  this.socket$ = webSocket('ws://' + (environment.apiUrl.replace(/^https?:\/\//, '')) + '/ws/chat');
+}
 
   // Send a message to the server
   sendMessage(message: any) {

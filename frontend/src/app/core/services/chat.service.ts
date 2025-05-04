@@ -2,15 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { WebSocketService } from './socket.service';
-
 export interface Message {
-  id: string;
   sender_uid: string;
   chat_id: string;
   message: string;
-  updated_at: string;
-  created_at: string;
 }
 
 @Injectable({
@@ -23,7 +18,6 @@ export class ChatService {
 
   constructor(
     private http: HttpClient, 
-    private webSocketService: WebSocketService
   ) {}
 
   /**
@@ -130,8 +124,11 @@ export class ChatService {
    * Send a message through the WebSocket.
    * @param message The message object to send.
    */
-  sendMessage(data: { chat_id: string }) {
-    return this.http.post<Message[]>(`${this.apiUrl}/users/chat/messages`, data);
+  sendMessage(data: {
+    sender_uid: string,
+    message: string,
+    chat_id: string}) {
+    return this.http.post<Message[]>(`${this.apiUrl}/users/chat/messages/add`, data);
   }
 
   /**

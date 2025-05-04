@@ -3,7 +3,8 @@ import {
   OnInit,
   OnDestroy,
   ViewChild,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  Injectable
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ChatService, Message } from '../../core/services/chat.service';
@@ -11,10 +12,10 @@ import { AuthService } from '../../core/services/auth.service';
 import {CdkFixedSizeVirtualScroll, CdkVirtualScrollViewport} from '@angular/cdk/scrolling';
 import {DatePipe, NgClass} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ScrollingModule } from '@angular/cdk/scrolling';
-import { WebSocketService } from '../../core/services/socket.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-chat',
@@ -28,7 +29,7 @@ import { WebSocketService } from '../../core/services/socket.service';
     DatePipe,
     CdkFixedSizeVirtualScroll,
     ScrollingModule,
-    WebSocketService
+    CommonModule
   ],
 })
 export class ChatComponent implements OnInit, OnDestroy {
@@ -39,43 +40,31 @@ export class ChatComponent implements OnInit, OnDestroy {
   chatId = '';
   messages: Message[] = [];
   newMessage = '';
+  private messageSubscription: Subscription | undefined;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private chatService: ChatService,
     private authService: AuthService,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
-    private webSocketService: WebSocketService
   ) {}
-  private destroy$ = new Subject<void>();
 
   ngOnInit(): void {
     this.userId = this.authService.getUserId() ?? '';
-
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.groupId = params['groupId'];
       if (this.groupId) {
-        this.startChat();
+        this.initChat();
       }
     });
   }
 
-
-  initChat(groupId: string) {
-    // Paso 1: Crear o recuperar el chat por groupId
-    this.chatService.createChat(groupId).subscribe({
-      next: (res: any) => {
-        this.chatId = res.chat_id;
-
-        // Paso 2: Obtener todos los mensajes del chat
-        this.chatService.getAllMessages({chat_id: this.chatId}).subscribe({
-          next: (response: any) => {
-            this.messages = response.messages || [];
-          },
-          error: (err) => {
-            console.error('Error al obtener mensajes:', err);
-          }
-        });
+  initChat(): void {
+    // Crear o recuperar chat por groupId
+    this.chatService.createChat(this.groupId).subscribe({
+      next: (res) => {
+        this.chatId = res.id;        // Conectar WebSocket solo después de obtener el chat y mensajes
       },
       error: (err) => {
         console.error('Error al crear/obtener chat:', err);
@@ -83,56 +72,31 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
   }
 
-  startChat(): void {
-    this.chatService.createChat(this.groupId).subscribe({
-      next: (res) => {
-        if (!res.id) {
-          console.error('❌ Error: res.id es inválido:', res);
-          return;
-        }
-        this.chatId = res.id;
-  
-        // Obtener mensajes ANTES de conectar WebSocket
-        this.loadMessages(() => {
-          this.chatService.connect(this.chatId);
-  
-          this.chatService.onMessage()
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((msg) => {
-              this.messages.push(msg);
-              console.log('📩 Mensaje recibido del WebSocket:', msg);
-              this.cdr.detectChanges();
-            });
-        });
-      },
-      error: (err) => console.error('Error creando chat:', err),
-    });
-  }
-  
-
-  loadMessages(callback?: () => void): void {
-    this.chatService.getAllMessages({ chat_id: this.chatId }).subscribe({
-      next: (msgs) => {
-        this.messages = msgs;
-        this.cdr.detectChanges();
-        setTimeout(() => {
-          callback?.();
-        }, 100);
-      }});
-  }
-  
+  generateMessageId(): string {
+    return `${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+  }  
 
   sendMessage(): void {
-    const text = { type: 'message', data: this.newMessage.trim()}
-    this.webSocketService.sendMessage(text);
-    this.newMessage = '';
+    const messageData = {
+      sender_uid: this.userId, 
+      message: this.newMessage, 
+      chat_id: this.chatId,          
+    };  
+      console.log(messageData.chat_id);
+    this.chatService.sendMessage(messageData).subscribe(
+      (response) => {
+        console.log('Mensaje enviado correctamente:', response);
+      },
+      (error) => {
+        console.error('Error al enviar el mensaje:', error);
+      }
+    );
+    this.newMessage = ''; 
   }
-  
-
 
   ngOnDestroy(): void {
+    // Unsubscribe de todos los observables al destruir el componente
     this.destroy$.next();
     this.destroy$.complete();
-    this.chatService.disconnect();
   }
 }

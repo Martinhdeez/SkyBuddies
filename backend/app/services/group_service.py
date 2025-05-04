@@ -72,7 +72,7 @@ class GroupService:
         user_vector = flatten_travel_filter(user_preferences)
 
         # Obtener todos los grupos públicos
-        groups = await self.group_repository.get_all_public_groups()
+        groups = await self.group_repository.get_all_others_public_groups(user_id)
         scored_groups = []
 
         # Comparar las preferencias del usuario con las de cada grupo
