@@ -27,14 +27,14 @@ class GeminiService:
             return None
     
     def _build_prompt(self, filters: dict) -> str:
-        prompt = "Based on the following filters, recommend 11 countries to visit in order of best match:\n"
+        prompt = "Based on the following filters, recommend 11 cities to visit in order of best match:\n"
         for key, value in filters.items(): 
             prompt += f"- {key}: {value}\n"
         prompt += "\nPlease provide the recommendations in the following format, with a number before each country: "
-        prompt += "`1. Spain\n2. Germany\n3. Italy ...` (where each country is preceded by its ranking number, starting from 1)."
+        prompt += "`1. Madrid\n2. Berlin\n3. New York ...` (where each city is preceded by its ranking number, starting from 1)."
         prompt += "\n\nThe countries should be ordered by best match with the filters provided."
         prompt += "\nPlease do not include any other text or explanation, just the list of countries in this exact format."
-        prompt += " Do not include any other symbols, like dashes or bullets. Only numbers and country names."
+        prompt += " Do not include any other symbols, like dashes or bullets. Only numbers and city names."
         return prompt
 
     

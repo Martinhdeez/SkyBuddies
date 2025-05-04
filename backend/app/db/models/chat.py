@@ -7,10 +7,6 @@ class ChatMessage(BaseModel):
     sender_uid: str
     chat_id: str
     message: str
-    favorite: Optional[bool] = Field(default=False, title="favorite")
-    seen: Optional[bool] = Field(default=False, title="seen")
-    updated_at: Optional[datetime] = Field(default=datetime.now(), title="updated_at")
-    created_at:  Optional[datetime] = Field(default=datetime.now(), title="created_at")
 
     class Config:
         from_attributes = True

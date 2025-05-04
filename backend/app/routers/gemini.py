@@ -6,7 +6,7 @@ router = APIRouter()
 
 gemini_service = GeminiService()
 
-@router.post("/recommend-countries")
+@router.post("/recommend-cities")
 async def recommend_countries(travel_filter: TravelFilter):
     try:
         result = gemini_service.recommend_countries(travel_filter.model_dump())
