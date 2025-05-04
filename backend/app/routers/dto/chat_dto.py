@@ -8,3 +8,4 @@ class ChatDTO(BaseModel):
 class ChatMessageDTO(BaseModel): 
     sender_uid: Text 
     message: Text
+    chat_id: Text
