@@ -156,4 +156,4 @@ class GroupRepository(Repository):
         doc = await self.data_collection.find_one({"code": code})
         if not doc:
             return HTTPException(status_code=404, detail="Group not found")
-        return doc
+        return self.convert_helper(doc)
