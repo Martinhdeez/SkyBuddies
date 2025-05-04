@@ -36,7 +36,7 @@ async def get_group(group_id: str):
 async def get_recomendations(
     travel_filter: TravelFilter
 ) -> list[Group]:
-    return await group_service.get_recommended_groups_for_user(travel_filter.user_id, travel_filter, 1)
+    return await group_service.get_recommended_groups_for_user(travel_filter.user_id, travel_filter)
 
 @router.get("/user/{user_id}", response_model=list[Group])
 async def get_groups_by_user_id(user_id: str) -> List[Group]:

@@ -67,7 +67,7 @@ class GroupService:
     async def remove_members(self, uid: str, members: List[str]) -> bool:
         return await self.group_repository.remove_members(uid, members)
 
-    async def get_recommended_groups_for_user(self, user_id: str, user_preferences: TravelFilter, limit: int = 5) -> List[Group]:
+    async def get_recommended_groups_for_user(self, user_id: str, user_preferences: TravelFilter, limit: int = 3) -> List[Group]:
         # Convertir las preferencias del usuario en un diccionario plano
         user_vector = flatten_travel_filter(user_preferences)
 
