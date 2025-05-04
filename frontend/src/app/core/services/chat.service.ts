@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { WebSocketService } from './socket.service';
 
 export interface Message {
   id: string;
@@ -20,7 +21,10 @@ export class ChatService {
   private socket: WebSocket | null = null;
   private messageSubject = new Subject<Message>();
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient, 
+    private webSocketService: WebSocketService
+  ) {}
 
   /**
    * Create a new chat.
@@ -42,9 +46,11 @@ export class ChatService {
    * Get all chats for a user.
    * @param chatId The ID of the chat to retrieve.
    */
-  getAllMessages(chatId: string): Observable<Message[]> {
-    return this.http.post<Message[]>(`${this.apiUrl}/users/chat/messages`, { chat_id: chatId });
+  getAllMessages(payload: { chat_id: string }): Observable<Message[]> {
+    return this.http.post<Message[]>(`${this.apiUrl}/users/chat/messages`, payload);
   }
+  
+  
 
   /**
    * Get the last N messages from a chat.
@@ -124,14 +130,9 @@ export class ChatService {
    * Send a message through the WebSocket.
    * @param message The message object to send.
    */
-  sendMessage(message: { chat_id: string; sender_uid: string; message: string }): void {
-    if (this.socket?.readyState === WebSocket.OPEN) {
-      this.socket.send(JSON.stringify(message));
-    } else {
-      console.error('WebSocket no conectado aún.');
-    }
+  sendMessage(data: { chat_id: string }) {
+    return this.http.post<Message[]>(`${this.apiUrl}/users/chat/messages`, data);
   }
-
 
   /**
    * Listen for incoming messages.

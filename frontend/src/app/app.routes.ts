@@ -39,7 +39,7 @@ export const routes: Routes = [
   { path: 'filters/:id', component: FiltersComponent },
   { path: 'user/:id', component: UserComponent },
   { path: 'recommendations', component: RecommendationsComponent },
-  { path: 'users/chat/groups/:groupId', component: GroupComponent },
+  { path: 'users/chat/groups/:groupId', component: ChatComponent },
   // IT'S OBLIGATORY TO HAVE THIS LINE AT THE END OF THE ROUTES BECAUSE IT REDIRECTS
   // TO THE INDEX PAGE IF THE URL IS NOT FOUND
   { path: '**', redirectTo: 'index' },
