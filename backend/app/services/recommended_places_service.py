@@ -6,10 +6,10 @@ class RecommendedPlacesService:
     def __init__(self): 
         self.base_url = "http://api.geonames.org/searchJSON"  
 
-    async def get_recommended_places(self, city: str) -> List[str]:
+    async def get_recommended_places(self, city: str, max_val: int) -> List[str]:
         params = {
             "q": city,
-            "maxRows": 10,  
+            "maxRows": max_val,  
             "lang": "en",   
             "username": "drako266", 
             "featureCode": "MNMT",  

@@ -10,6 +10,8 @@ gemini_service = GeminiService()
 async def recommend_countries(travel_filter: TravelFilter):
     try:
         result = gemini_service.recommend_countries(travel_filter.model_dump())
-        return {"recommended_countries": result}
+        return {
+            "recommended_countries": result
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {e}")
