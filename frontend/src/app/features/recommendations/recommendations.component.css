@@ -1,106 +1,156 @@
 :host {
   display: block;
   font-family: 'Inter', sans-serif;
-  margin: 0; padding: 0;
-}
-
-.recommendations-page {
-  position: relative;
-  min-height: 100vh;
-  background: linear-gradient(-45deg, #23153c, #0770E3, #23153c);
-  background-size: 400% 400%;
-  animation: gradientBG 20s ease infinite;
-  overflow: hidden;
-}
-
-@keyframes gradientBG {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(360deg, #23153c, #0770E3);
+  min-height: 80vh;
 }
 
 .content {
-  position: relative;
-  z-index: 1;
-  max-width: 1000px;
-  margin: 4rem auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   padding: 2rem;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  min-height: 60vh;
 }
 
+/* Título */
 .title {
-  font-size: 2.25rem;
-  color: #23153c;
+  font-size: 2.75rem;
   text-align: center;
   margin-bottom: 2rem;
 }
 
-.countries-grid {
-  display: grid;
-  gap: 1.5rem;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-}
-
-.country-card {
-  background: rgba(255,255,255,0.9);
-  border-radius: 8px;
-  padding: 1.25rem;
+/* Mensaje sin resultados */
+.no-results {
   text-align: center;
-  font-weight: 600;
-  font-size: 1rem;
-  color: #23153c;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  cursor: pointer;
-  transition: box-shadow 200ms ease;
+  font-size: 1.2rem;
+  opacity: 0.8;
 }
 
-.country-card:hover {
-  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-}
-
-.actions {
+.card-wrapper {
   display: flex;
   justify-content: center;
-  gap: 1rem;
-  margin-top: 2.5rem;
+  margin-bottom: 2rem;
+}
+.country-card {
+  margin: 2rem;
+  background: #ffecec;
+  width: 100%;
+  max-width: 600px;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.country-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
 }
 
-.btn {
-  padding: 0.75rem 1.5rem;
-  background: #0770E3;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 200ms ease, transform 200ms ease;
+/* Nombre de la ciudad */
+.city {
+  font-size: 2.25rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
 }
 
-.btn:hover {
-  background: #055bb5;
-  transform: translateY(-2px);
+/* Secciones internas */
+.section {
+  margin-top: 1.75rem;
+}
+.section h3 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid ;
+  padding-bottom: 0.3rem;
 }
 
-app-header, app-footer {
-  z-index: 2;
+/* Lista de lugares */
+.places ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.places li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+.places li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  font-size: 1.2rem;
+  line-height: 1;
 }
 
-/* recommendations.component.css */
+/* Galería de fotos */
 .photos-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px,1fr));
-  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(140px,1fr));
+  gap: 1rem;
   margin-top: 0.5rem;
 }
 .photos-grid img {
   width: 100%;
-  border-radius: 4px;
+  aspect-ratio: 4/3;
   object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-.places ul {
-  list-style: disc inside;
-  margin: 0.5rem 0 1rem;
+.photos-grid img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+/* Paginador */
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.btn-nav {
+  border: none;
+  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.btn-nav:disabled {
+  cursor: default;
+}
+.btn-nav:not(:disabled):hover {
+  transform: translateY(-3px);
+}
+.page-indicator {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Acciones finales */
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+.btn {
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 1.6rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.btn:hover {
+  transform: translateY(-2px);
 }
