@@ -159,3 +159,96 @@
   background: #e0e0e0;
   transform: translateY(-2px);
 }
+
+.participants-wrapper {
+  margin-top: 1rem;
+  position: relative;
+}
+
+.circle-icon {
+  width: 30px;
+  height: 30px;
+  background: #fff;
+  color: #23153c;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: transform 0.2s ease;
+}
+.circle-icon:hover {
+  transform: scale(1.1);
+}
+
+.participants-list {
+  margin-top: 0.5rem;
+  background: #fff;
+  color: #23153c;
+  border-radius: 12px;
+  border: 2px solid #23153c;
+  padding: 0.75rem 1rem;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
+  font-size: 14px;
+  position: relative;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.participants-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.participants-list li {
+  padding: 0.25rem 0;
+  opacity: 0;
+  animation: fadeInStagger 0.3s ease forwards;
+  animation-delay: calc(var(--i) * 80ms);
+  transform: translateY(6px);
+}
+.participants-list li:hover {
+  font-weight: bold;
+  color: #0770E3;
+}
+
+.bubble-arrow {
+  position: absolute;
+  top: -10px;
+  left: 20px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 10px solid #fff;
+  filter: drop-shadow(2px -2px 0 rgba(0,0,0,0.1));
+}
+
+/* Animaciones más lentas y suaves */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInStagger {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.participants-list {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.participants-list li {
+  animation: fadeInStagger 0.5s ease forwards;
+  animation-delay: calc(var(--i) * 150ms);
+}

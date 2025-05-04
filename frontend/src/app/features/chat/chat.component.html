@@ -1,22 +1,19 @@
 <div class="chat-container">
   <div class="chat-wrapper">
     <div class="chat-box">
-      <div class="chat-header">Group Chat {{ groupId }}</div>
+      <div class="chat-header">Group Chat</div>
 
       <cdk-virtual-scroll-viewport
         class="messages-viewport"
         itemSize="80"
       >
         <div
-          *cdkVirtualFor="let msg of messages"
+          *ngFor="let msg of messages"
           class="message-bubble"
           [ngClass]="msg.sender_uid === userId ? 'sent' : 'received'"
         >
           <div class="message-content">{{ msg.message }}</div>
-          <div class="timestamp">{{ msg.created_at | date:'shortTime' }}</div>
-          <div class="userSender">from: {{ msg.sender_uid }}</div>
         </div>
-
       </cdk-virtual-scroll-viewport>
 
       <div class="input-container">

@@ -19,6 +19,9 @@ import { HeaderComponent } from '../../core/components/header/header.component';
 import { FooterComponent } from '../../core/components/footer/footer.component';
 import { AuthService }     from '../../core/services/auth.service';
 import { GroupService, Group } from '../../core/services/group.service';
+import { UserService, User } from '../../core/services/user.service';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-group-page',
@@ -55,10 +58,13 @@ export class GroupComponent implements OnInit {
   groups: Group[] = [];
   hoverState: Record<string,'rest'|'hover'> = {};
   searchControl = new FormControl('');
+  
+  visibleParticipants: Record<string, boolean> = {};
+  participants: Record<string, User[]> = {};
 
   constructor(
-    private svc: GroupService,
-    private auth: AuthService,
+    private svc:    GroupService,
+    private auth:   AuthService,
     private router: Router
   ) {}
 
@@ -104,4 +110,27 @@ export class GroupComponent implements OnInit {
   goToChat(groupId: string) {
     this.router.navigate(['/users/chat/groups', groupId]);
   }
+
+  showParticipants(groupId: string) {
+    this.visibleParticipants[groupId] = true;
+  
+    if (!this.participants[groupId]) {
+      const group = this.groups.find(g => g.id === groupId);
+      if (group) {
+        const requests = group.members.map(uid =>
+          this.userService.getUserById(uid).pipe(catchError(() => of(null)))
+        );
+  
+        forkJoin(requests).subscribe(users => {
+          this.participants[groupId] = users.filter(u => u !== null) as User[];
+        });
+      }
+    }
+  }
+  
+  hideParticipants(groupId: string) {
+    this.visibleParticipants[groupId] = false;
+  }
+  
+  
 }
