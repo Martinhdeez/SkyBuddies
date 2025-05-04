@@ -7,5 +7,4 @@ class ChatDTO(BaseModel):
 
 class ChatMessageDTO(BaseModel): 
     sender_uid: Text 
-    favorite: bool 
-    seen: bool
+    message: Text

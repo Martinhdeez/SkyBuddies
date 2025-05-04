@@ -5,6 +5,7 @@ from starlette.responses import JSONResponse
 from pydantic import BaseModel
 from db.models.chat import ChatMessage
 from services.chat_message_service import ChatMessageService
+from routers.dto.chat_dto import ChatMessageDTO
 
 router = APIRouter(
     prefix="/users/chat/messages",
@@ -88,7 +89,7 @@ async def delete_message(
 
 @router.post("/add", response_model=ChatMessage)    
 async def add_message(
-    message: ChatMessage
+    message: ChatMessageDTO
 ):
     message = await message_service.add_message(message)
     if not message:
