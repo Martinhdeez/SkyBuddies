@@ -148,6 +148,13 @@ class GroupRepository(Repository):
         print(f"Groups: {docs}")
         return [self.convert_helper(d) for d in docs]
 
+    async def get_all_others_public_groups(self, user_id: str) -> List[Group]:
+        cursor = self.data_collection.find(
+            {"members": {"$ne": user_id}, "visibility": GroupVisibility.PUBLIC}
+        )
+        docs = await cursor.to_list(None)
+        return [self.convert_helper(d) for d in docs]
+        
     async def get_group_by_name(self, name: str) -> Optional[Group]:
         doc = await self.data_collection.find_one({"name": name})
         return self.convert_helper(doc) if doc else None
