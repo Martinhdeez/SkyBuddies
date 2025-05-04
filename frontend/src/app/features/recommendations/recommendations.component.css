@@ -87,3 +87,20 @@
 app-header, app-footer {
   z-index: 2;
 }
+
+/* recommendations.component.css */
+.photos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px,1fr));
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+.photos-grid img {
+  width: 100%;
+  border-radius: 4px;
+  object-fit: cover;
+}
+.places ul {
+  list-style: disc inside;
+  margin: 0.5rem 0 1rem;
+}

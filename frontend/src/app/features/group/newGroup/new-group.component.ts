@@ -14,7 +14,7 @@ import {
   animate,
   state
 } from '@angular/animations';
-import { Router } from '@angular/router';
+import {Router} from '@angular/router';
 import { Filter, FiltersService } from '../../../core/services/filters.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { GroupService } from '../../../core/services/group.service';
@@ -168,7 +168,7 @@ const FILTER_GROUPS: FilterGroup[] = [
     CommonModule,
     FormsModule,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
   ],
   templateUrl: './new-group.component.html',
   styleUrls: ['./new-group.component.css'],
@@ -189,7 +189,6 @@ const FILTER_GROUPS: FilterGroup[] = [
 export class NewGroupComponent implements OnInit, AfterViewInit {
   @ViewChild('flightPath') flightPath?: ElementRef<SVGPathElement>;
 
-  // Wizard pasos 1-2
   currentStep = 1;
   hoverState: Record<string, 'rest' | 'hover'> = {
     solo: 'rest',
@@ -200,7 +199,6 @@ export class NewGroupComponent implements OnInit, AfterViewInit {
   isSolo = true;
   visibility: 'private' | 'public' = 'private';
 
-  // Filtros paso 3..N
   filterGroups = FILTER_GROUPS;
   currentFilterIndex = 0;
   newFilter!: Filter & {
@@ -209,13 +207,10 @@ export class NewGroupComponent implements OnInit, AfterViewInit {
     departure_city: string;
   };
 
-  // Paso final
   groupName = '';
 
-  // Usuario
   userId!: string;
 
-  // Feedback
   isCreating = false;
   createSuccess = false;
 
@@ -309,12 +304,10 @@ export class NewGroupComponent implements OnInit, AfterViewInit {
     };
   }
 
-  // Hover
   setHover(key: string, state: 'rest' | 'hover') {
     this.hoverState[key] = state;
   }
 
-  // Pasos 1-2
   selectSolo()   { this.isSolo = true;  this.currentStep = 2; }
   selectAccompanied() { this.isSolo = false; this.currentStep = 2; }
   selectPrivate() { this.visibility = 'private'; this.currentStep = 3; }
@@ -322,14 +315,12 @@ export class NewGroupComponent implements OnInit, AfterViewInit {
 
   back() {
     if (this.currentStep > 1) {
-      // si vienes de step4 o 5, ajusta el índice de filtros
       if (this.currentStep === 4)       this.currentStep = 3;
       else if (this.currentStep === 5)  this.currentStep = 4;
       else                              this.currentStep--;
     }
   }
 
-  // Helpers de filtro tipado
   isOptionSelected(key: FilterGroupKey, opt: string): boolean {
     const rec = this.newFilter[key] as Record<string, boolean>;
     return rec[opt];
@@ -361,15 +352,13 @@ export class NewGroupComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // Paso 4: opciones extra → avanza al nombre
   nextExtra() {
     if (!this.newFilter.departure_city.trim()) return;
     this.currentStep = 5;
   }
 
-  // Paso 5: crear con nombre
   createGroup() {
-    // 1) Una doble comprobación por seguridad
+
     if (
       !this.groupName.trim() ||
       !this.newFilter.departure_city?.trim()
@@ -394,7 +383,13 @@ export class NewGroupComponent implements OnInit, AfterViewInit {
     };
 
     this.groupsSvc.createGroup(payload).subscribe({
-      next: () => this.createSuccess = true,
+      next: () => {
+        this.createSuccess = true;
+
+        setTimeout(() => {
+          this.router.navigate(['/groups']);
+        }, 3000);
+      },
       error: err => {
         console.error('Error creando grupo', err);
         this.isCreating = false;

@@ -21,35 +21,6 @@
   <app-header></app-header>
 
   <main class="content">
-    <section *ngIf="stepType==='text'" @fadeSlide class="question-wrapper">
-      <label class="text-label">
-        Enter your departure city:
-        <input type="text"
-               class="text-input"
-               [(ngModel)]="currentFilter.departure_city" />
-      </label>
-      <button class="cta-btn" (click)="next()"
-              [disabled]="!currentFilter.departure_city.trim()">
-        Next
-      </button>
-    </section>
-
-    <!-- Paso 2: Preferencias Binarias -->
-    <section *ngIf="stepType==='binary'" @fadeSlide class="question-wrapper">
-      <h2 class="question-text">Travel Preferences</h2>
-      <label class="checkbox-wrapper">
-        <input type="checkbox" [(ngModel)]="currentFilter.eco_travel" />
-        <span class="checkbox-custom"></span>
-        <div class="card-inner"><h3 class="card-title">Eco travel</h3></div>
-      </label>
-      <label class="checkbox-wrapper">
-        <input type="checkbox" [(ngModel)]="currentFilter.low_cost" />
-        <span class="checkbox-custom"></span>
-        <div class="card-inner"><h3 class="card-title">Low cost</h3></div>
-      </label>
-      <button class="cta-btn" (click)="next()">Next</button>
-    </section>
-
     <section *ngIf="stepType==='card'" @fadeSlide class="question-wrapper">
       <div class="cards-grid">
         <div
@@ -64,6 +35,32 @@
           <p class="card-desc">Tap to select {{ stepCategory }}</p>
         </div>
       </div>
+      <button class="cta-btn" (click)="next()">Next</button>
+    </section>
+
+    <section *ngIf="stepType==='text' && stepCategory==='departure_city'" @fadeSlide class="question-wrapper">
+      <label class="text-label">
+        Enter your departure city:
+        <input type="text" class="text-input" [(ngModel)]="currentFilter.departure_city" />
+      </label>
+      <button class="cta-btn" (click)="next()">Next</button>
+    </section>
+
+    <section *ngIf="stepType==='binary' && stepCategory==='preferences'" @fadeSlide class="question-wrapper">
+      <h2 class="question-text">Travel Preferences</h2>
+
+      <label class="checkbox-wrapper">
+        <input type="checkbox" [(ngModel)]="currentFilter.eco_travel" />
+        <span class="checkbox-custom"></span>
+        <div class="card-inner"><h3 class="card-title">Eco travel</h3></div>
+      </label>
+
+      <label class="checkbox-wrapper">
+        <input type="checkbox" [(ngModel)]="currentFilter.low_cost" />
+        <span class="checkbox-custom"></span>
+        <div class="card-inner"><h3 class="card-title">Low cost</h3></div>
+      </label>
+
       <button class="cta-btn" (click)="next()">Next</button>
     </section>
 
@@ -104,6 +101,32 @@
       }">
     </li>
   </ul>
+
+  <section *ngIf="showResults" class="question-wrapper">
+    <h2 class="question-text">Recommended Groups</h2>
+
+    <div *ngIf="recommendedGroups.length > 0; else noResults" class="cards-grid">
+      <div *ngFor="let g of recommendedGroups" class="card">
+        <h3 class="card-title">{{ g.name }}</h3>
+        <p class="card-desc">Visibility: {{ g.visibility }}</p>
+        <p class="card-desc">Code: {{ g.code }}</p>
+
+        <button
+          class="cta-btn"
+          (click)="joinGroup(g.id)"
+          [disabled]="joiningGroupId === g.id || joinedGroups.has(g.id)"
+        >
+          {{ joinedGroups.has(g.id) ? 'Joined' : (joiningGroupId === g.id ? 'Joining…' : 'Join') }}
+        </button>
+      </div>
+    </div>
+
+    <ng-template #noResults>
+      <p class="card-desc">No matching groups found.</p>
+    </ng-template>
+
+    <button class="cta-btn" (click)="router.navigate(['/groups'])">Go to My Groups</button>
+  </section>
 
   <app-footer></app-footer>
 </div>

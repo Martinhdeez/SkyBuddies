@@ -8,6 +8,7 @@ import { HeaderComponent } from '../../core/components/header/header.component';
 import { FooterComponent } from '../../core/components/footer/footer.component';
 import { CommonModule, NgForOf } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import {RecommendationService} from '../../core/services/recomendation.service';
 
 @Component({
   selector: 'app-recommendations',
@@ -43,24 +44,48 @@ import { RouterModule } from '@angular/router';
 export class RecommendationsComponent implements OnInit {
   recommendations: string[] = [];
   hoverState: Record<string,'rest'|'hover'> = {};
+  placesMap: Record<string,{ recommended_places: string[]; photos: string[] }> = {};
+  loadingMap: Record<string, boolean> = {};
+  errorMap: Record<string, boolean> = {};
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private recommendationService: RecommendationService
+  ) {}
 
   ngOnInit() {
     const state = history.state as any;
-
     if (Array.isArray(state.recommended)) {
       this.recommendations = state.recommended;
-    } else {
-      console.warn('No vienen recomendaciones válidas');
-      this.recommendations = [];
     }
-    for (const c of this.recommendations) {
-      this.hoverState[c] = 'rest';
+    for (const city of this.recommendations) {
+      this.hoverState[city] = 'rest';
+      this.fetchPlaces(city);
     }
   }
 
-  setHover(country: string, state: 'rest'|'hover') {
-    this.hoverState[country] = state;
+  setHover(city: string, state: 'rest'|'hover') {
+    this.hoverState[city] = state;
+  }
+
+  private fetchPlaces(city: string) {
+    this.loadingMap[city] = true;
+    this.errorMap[city] = false;
+
+    this.recommendationService.getPlaces(city)
+      .subscribe({
+        next: resp => {
+          this.placesMap[city] = {
+            recommended_places: resp.recommended_places,
+            photos: resp.photos
+          };
+          this.loadingMap[city] = false;
+        },
+        error: err => {
+          console.error(`Error al cargar lugares para ${city}`, err);
+          this.errorMap[city] = true;
+          this.loadingMap[city] = false;
+        }
+      });
   }
 }

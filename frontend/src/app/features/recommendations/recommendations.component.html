@@ -1,19 +1,47 @@
+<!-- recommendations.component.html -->
 <div class="recommendations-page">
   <app-header></app-header>
 
   <main class="content" @listAnim>
-    <h1 class="title">Recommended Countries</h1>
+    <h1 class="title">Recommended Cities</h1>
     <div class="countries-grid">
+      <!-- Sólo iteramos las que no fallaron -->
       <div
-        *ngFor="let country of recommendations"
+        *ngFor="let city of recommendations"
         class="country-card"
-        [@cardHover]="hoverState[country]"
-        (mouseenter)="setHover(country,'hover')"
-        (mouseleave)="setHover(country,'rest')"
+        [@cardHover]="hoverState[city]"
+        (mouseenter)="setHover(city,'hover')"
+        (mouseleave)="setHover(city,'rest')"
       >
-        {{ country }}
+        <h2>{{ city }}</h2>
+
+        <!-- Cargando -->
+        <p *ngIf="loadingMap[city]">Cargando lugares…</p>
+
+        <!-- En caso de éxito: lista + fotos -->
+        <ng-container *ngIf="placesMap[city] && !loadingMap[city]">
+          <section class="places">
+            <h3>Lugares recomendados:</h3>
+            <ul>
+              <li *ngFor="let place of placesMap[city].recommended_places">
+                {{ place }}
+              </li>
+            </ul>
+          </section>
+          <section class="photos">
+            <h3>Fotos:</h3>
+            <div class="photos-grid">
+              <img
+                *ngFor="let url of placesMap[city].photos"
+                [src]="url"
+                [alt]="'Foto de ' + city"
+              />
+            </div>
+          </section>
+        </ng-container>
       </div>
     </div>
+
     <div class="actions">
       <button class="btn" routerLink="/filters">Modify Filters</button>
       <button class="btn" routerLink="/groups">View Groups</button>

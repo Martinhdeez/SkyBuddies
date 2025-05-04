@@ -1,4 +1,4 @@
-// src/app/features/group/new-group.component.ts
+// src/app/features/group/group.component.ts
 import {
   Component,
   OnInit
@@ -37,7 +37,8 @@ import { GroupService, Group } from '../../core/services/group.service';
         query('.group-card', [
           style({ opacity: 0, transform: 'translateY(20px)' }),
           stagger(80, [
-            animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+            animate('300ms ease-out',
+              style({ opacity: 1, transform: 'translateY(0)' }))
           ])
         ], { optional: true })
       ])
@@ -50,27 +51,23 @@ import { GroupService, Group } from '../../core/services/group.service';
   ]
 })
 export class GroupComponent implements OnInit {
-  private userPrivateGroups: Group[] = [];
+  private myGroups: Group[] = [];
   groups: Group[] = [];
   hoverState: Record<string,'rest'|'hover'> = {};
   searchControl = new FormControl('');
 
   constructor(
-    private svc:    GroupService,
-    private auth:   AuthService,
+    private svc: GroupService,
+    private auth: AuthService,
     private router: Router
   ) {}
 
   ngOnInit() {
-
     const me = this.auth.getUserId()!;
 
-    this.svc.getGroups().subscribe(all => {
-      this.userPrivateGroups = all.filter(g =>
-        g.visibility === 'private' &&
-        g.members.includes(me)
-      );
-      this.applyList(this.userPrivateGroups);
+    this.svc.getGroupsByUser(me).subscribe(userGroups => {
+      this.myGroups = userGroups;
+      this.applyList(this.myGroups);
     });
 
     this.searchControl.valueChanges.pipe(
@@ -79,20 +76,18 @@ export class GroupComponent implements OnInit {
     ).subscribe(term => this.applyFilter(term || ''));
   }
 
-  /** Sin término → privados. Con término → busca y filtra solo públicos */
   private applyFilter(term: string) {
     const q = term.trim().toLowerCase();
     if (!q) {
-      this.applyList(this.userPrivateGroups);
+      this.applyList(this.myGroups);
     } else {
-      this.svc.searchGroups(q, 20).subscribe(list => {
-        const pubs = list.filter(g => g.visibility === 'public');
-        this.applyList(pubs);
-      });
+      const filtered = this.myGroups.filter(g =>
+        g.name.toLowerCase().includes(q)
+      );
+      this.applyList(filtered);
     }
   }
 
-  /** Actualiza la vista y el estado hover */
   private applyList(arr: Group[]) {
     this.groups = arr;
     this.hoverState = {};
@@ -102,7 +97,6 @@ export class GroupComponent implements OnInit {
   onCardEnter(id: string) { this.hoverState[id] = 'hover'; }
   onCardLeave(id: string) { this.hoverState[id] = 'rest'; }
 
-  /** Navega al formulario "nuevo grupo" en otra página */
   goToCreate() {
     this.router.navigate(['/groups/new']);
   }

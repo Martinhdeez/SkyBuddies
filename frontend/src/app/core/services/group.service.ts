@@ -10,6 +10,9 @@ export interface Group {
   name: string;
   members: string[];
   visibility: 'public' | 'private';
+  travel_filter_mean: Filter;
+  users_travel_filter: Filter[];
+  code: string;
   updated_at: string;
   created_at: string;
 }
@@ -20,7 +23,6 @@ export interface GroupRecommendation {
   name: string;
   members: string[];
   visibility: 'public' | 'private';
-  travel_filter_mean: Filter;
   users_travel_filter: Filter[];
   code: string;
   created_at: string;
@@ -70,15 +72,21 @@ export class GroupService {
    * @param groupId The ID of the group to update.
    * @param payload The data to update the group.
    */
-  updateGroup(
-    groupId: string,
-    payload: {
-      name?: string;
-      members?: string[];
-      visibility?: 'public' | 'private';
-    }
-  ): Observable<Group> {
+  updateGroup(groupId: string, payload: {
+    name?: string;
+    members?: string[];
+    visibility?: 'public' | 'private';
+    users_travel_filter?: Filter[];
+  }): Observable<Group> {
     return this.http.put<Group>(`${this.baseUrl}/${groupId}`, payload);
+  }
+
+  /**
+   * GET /group/code/{code} → Get a group by code
+   * @param code The code of the group to retrieve.
+   */
+  getGroupByCode(code: string): Observable<Group> {
+    return this.http.get<Group>(`${this.baseUrl}/code/${code}`);
   }
 
   /**
@@ -96,12 +104,13 @@ export class GroupService {
    */
   addMembers(
     groupId: string,
+    users_travel_filter: Filter[],
     members: string[]
-  ): Observable<Group> {
-    return this.http.post<Group>(
-      `${this.baseUrl}/${groupId}/add/members`,
-      { members }
-    );
+  ): Observable<string> {
+    return this.http.post<string>(`${this.baseUrl}/${groupId}/add/members`, {
+      users_travel_filter,
+      members
+    });
   }
 
   /**
@@ -109,10 +118,7 @@ export class GroupService {
    * @param groupId The ID of the group.
    * @param members The list of member IDs to remove.
    */
-  removeMembers(
-    groupId: string,
-    members: string[]
-  ): Observable<Group> {
+  removeMembers(groupId: string, members: string[]): Observable<Group> {
     return this.http.post<Group>(
       `${this.baseUrl}/${groupId}/remove/members`,
       { members }
@@ -135,11 +141,8 @@ export class GroupService {
    * POST /group/recommendations → Get group recommendations
    * @param filterMean The filter mean to use for recommendations.
    */
-  recommendGroups(filterMean: Filter): Observable<GroupRecommendation[]> {
-    return this.http.post<GroupRecommendation[]>(
-      `${this.baseUrl}/recommendations`,
-      filterMean
-    );
+  recommendGroups(filterMean: Filter): Observable<Group[]> {
+    return this.http.post<Group[]>(`${this.baseUrl}/recommendations`, filterMean);
   }
 
   /**

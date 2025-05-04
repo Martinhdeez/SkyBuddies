@@ -12,6 +12,8 @@ import {FiltersComponent} from './features/filters/filters.component';
 import {UserComponent} from './features/user/user.component';
 import {RecommendationsComponent} from './features/recommendations/recommendations.component';
 import {NewGroupComponent} from './features/group/newGroup/new-group.component';
+import {ConnectionComponent} from './features/connections/connection.component';
+import {JoinComponent} from './features/join/join.component';
 
 /*
   UNCOMMENT THIS LINE FOR CHECK IF THE RAILWAY IS WORKING BUT IT'S COMMENTED FOR NOT CONSUMING THE RAILWAY API
@@ -30,6 +32,8 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
+  { path: 'connections', component: ConnectionComponent },
+  { path: 'join', component: JoinComponent },
   { path: 'users/chat', component: ChatComponent },
   { path: 'groups', component: GroupComponent },
   { path: 'groups/new', component: NewGroupComponent },

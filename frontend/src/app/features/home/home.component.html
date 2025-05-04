@@ -125,6 +125,8 @@
               Join
             </button>
           </div>
+          <div *ngIf="joinError" class="error-text">{{ joinError }}</div>
+
         </div>
 
         <div

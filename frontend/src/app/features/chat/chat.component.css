@@ -84,6 +84,12 @@ app-footer {
   text-align: right;
 }
 
+.userSender {
+  font-size: 0.65rem;
+  color: #777;
+  text-align: left;
+}
+
 .input-container {
   display: flex;
   padding: 12px 16px;
