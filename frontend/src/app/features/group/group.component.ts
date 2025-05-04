@@ -65,7 +65,8 @@ export class GroupComponent implements OnInit {
   constructor(
     private svc:    GroupService,
     private auth:   AuthService,
-    private router: Router
+    private router: Router,
+    private userService: UserService
   ) {}
 
   ngOnInit() {

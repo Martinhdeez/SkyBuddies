@@ -154,7 +154,7 @@ export class GroupService {
   }
 
   
-  getGroupByCode(code: string): Observable<GroupRecommendation> {
+  getGroupByRecomendationCode(code: string): Observable<GroupRecommendation> {
     return this.http.get<GroupRecommendation>(`${this.baseUrl}/by-code/${code}`);
   }
   
