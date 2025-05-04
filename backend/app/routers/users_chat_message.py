@@ -85,3 +85,12 @@ async def delete_message(
             "status_code": 200
         }
     )
+
+@router.post("/add", response_model=ChatMessage)    
+async def add_message(
+    message: ChatMessage
+):
+    message = await message_service.add_message(message)
+    if not message:
+        raise HTTPException(status_code=400, detail="Error adding message")
+    return message
