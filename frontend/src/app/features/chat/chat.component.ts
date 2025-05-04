@@ -82,7 +82,6 @@ export class ChatComponent implements OnInit, OnDestroy {
       message: this.newMessage, 
       chat_id: this.chatId,          
     };  
-      console.log(messageData.chat_id);
     this.chatService.sendMessage(messageData).subscribe(
       (response) => {
         console.log('Mensaje enviado correctamente:', response);

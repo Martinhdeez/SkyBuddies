@@ -25,7 +25,7 @@ async def get_group_by_code(code: str):
     group = await group_service.get_group_by_code(code)
     if not group:
         raise HTTPException(status_code=404, detail="Group not found")
-    return group
+    return group.id
 
 @router.get("/{group_id}", response_model=Group)
 async def get_group(group_id: str):

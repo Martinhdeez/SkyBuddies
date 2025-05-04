@@ -27,9 +27,26 @@
         <p>{{ g.members.length }} miembro(s)</p>
         <span class="visibility">{{ g.visibility | titlecase }}</span>
 
-        <!-- ✅ Botón para abrir el chat -->
+        <!-- 🔵 Icono y lista de participantes como bocadillo dentro del card -->
+        <div class="participants-wrapper"
+            (mouseenter)="showParticipants(g.id)"
+            (mouseleave)="hideParticipants(g.id)">
+          <div class="circle-icon">👥</div>
+
+          <div class="participants-list" *ngIf="visibleParticipants[g.id]">
+            <div class="bubble-arrow"></div>
+            <ul>
+              <li *ngFor="let p of participants[g.id]; let i = index" [style.--i]="i">
+                {{ p.full_name }}
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ✅ Chat button -->
         <button class="btn-chat" (click)="goToChat(g.id)">💬 Chat</button>
       </div>
+
 
       <div *ngIf="groups.length === 0" class="no-results">
         No groups found.
