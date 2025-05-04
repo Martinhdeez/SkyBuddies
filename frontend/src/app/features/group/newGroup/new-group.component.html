@@ -1,0 +1,220 @@
+<app-header></app-header>
+
+<div class="home-container">
+  <svg
+    class="flight-bg"
+    viewBox="0 0 2000 600"
+    preserveAspectRatio="none"
+    xmlns="http://www.w3.org/2000/svg"
+    style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none"
+  >
+    <!-- DEFINE THE FLIGHT PATH (IN 'S')-->
+    <defs>
+      <path
+        id="flightPath"
+        d="M -100,450
+         C 300,100 800,500 1200,200
+         S 2100,450 2500,350"
+        class="flight-path"
+        fill="none"
+      />
+    </defs>
+
+    <!-- THE FLIGHT PATH THAT WILL BE DRAWN -->
+    <use
+      href="#flightPath"
+      stroke="rgba(255,255,255,0.3)"
+      stroke-width="2"
+      stroke-dasharray="2250"
+      stroke-dashoffset="2250"
+    >
+      <animate
+        attributeName="stroke-dashoffset"
+        from="2250"
+        to="0"
+        dur="12.5s"
+        begin="0s"
+        calcMode="linear"
+        fill="freeze"
+      />
+    </use>
+
+    <!-- THE PLANE IMAGE THAT WILL MOVE ALONG THE PATH -->
+    <image
+      href="/assets/plane.svg"
+      width="48"
+      height="48"
+      transform="translate(-24,-24)"
+    >
+      <animateMotion
+        dur="15s"
+        begin="0s"
+        fill="freeze"
+        rotate="auto"
+      >
+        <mpath href="#flightPath" />
+      </animateMotion>
+    </image>
+  </svg>
+
+  <main class="content">
+
+    <!-- Step 1: Alone vs Group -->
+    <section *ngIf="currentStep === 1" @fadeSlide class="question-wrapper">
+      <h2 class="question-text">DO YOU TRAVEL ALONE?</h2>
+      <div class="cards-grid">
+        <div class="card"
+             [@cardHover]="hoverState['solo']"
+             (mouseenter)="setHover('solo','hover')"
+             (mouseleave)="setHover('solo','rest')"
+             (click)="selectSolo()">
+          <div class="card-icon">🚶‍♂️</div>
+          <h3 class="card-title">Alone</h3>
+        </div>
+        <div class="card"
+             [@cardHover]="hoverState['accompanied']"
+             (mouseenter)="setHover('accompanied','hover')"
+             (mouseleave)="setHover('accompanied','rest')"
+             (click)="selectAccompanied()">
+          <div class="card-icon">👥</div>
+          <h3 class="card-title">Group</h3>
+        </div>
+      </div>
+    </section>
+
+    <!-- Step 2: Private vs Public -->
+    <section *ngIf="currentStep === 2" @fadeSlide class="question-wrapper">
+      <h2 class="question-text">PRIVATE OR PUBLIC GROUP?</h2>
+      <div class="cards-grid">
+        <div class="card"
+             [@cardHover]="hoverState['private']"
+             (mouseenter)="setHover('private','hover')"
+             (mouseleave)="setHover('private','rest')"
+             (click)="selectPrivate()">
+          <div class="card-icon">🔒</div>
+          <h3 class="card-title">Private</h3>
+        </div>
+        <div class="card"
+             [@cardHover]="hoverState['public']"
+             (mouseenter)="setHover('public','hover')"
+             (mouseleave)="setHover('public','rest')"
+             (click)="selectPublic()">
+          <div class="card-icon">🌐</div>
+          <h3 class="card-title">Public</h3>
+        </div>
+      </div>
+      <button class="back-btn" (click)="back()">← Back</button>
+    </section>
+
+    <!-- Step 3: Configure Each Option Group -->
+    <section
+      *ngIf="currentStep === 3"
+      @fadeSlide
+      class="question-wrapper"
+    >
+      <h2 class="question-text">
+        {{ filterGroups[currentFilterIndex].title }}
+      </h2>
+
+      <div class="cards-grid">
+        <div
+          *ngFor="let opt of filterGroups[currentFilterIndex]?.options"
+          class="card"
+          [@cardHover]="hoverState[opt]"
+          (mouseenter)="setHover(opt, 'hover')"
+          (mouseleave)="setHover(opt, 'rest')"
+          (click)="toggleOption(filterGroups[currentFilterIndex].key, opt)"
+        >
+          <div class="card-icon">
+            {{ isOptionSelected(filterGroups[currentFilterIndex].key, opt) ? '✅' : '❌' }}
+          </div>
+          <h3 class="card-title">
+            {{ filterGroups[currentFilterIndex].labels?.[opt] || opt }}
+          </h3>
+        </div>
+      </div>
+
+      <div>
+        <button
+          class="back-btn"
+          (click)="backFilter()"
+        >
+          ← Back
+        </button>
+        <button
+          class="cta-btn"
+          (click)="nextFilter()"
+          [disabled]="!anySelected(filterGroups[currentFilterIndex].key)"
+        >
+          {{ currentFilterIndex < filterGroups.length - 1 ? 'Next' : 'Continue' }}
+        </button>
+      </div>
+    </section>
+
+    <!-- Step 4: Extra Options -->
+    <section *ngIf="currentStep === 4" @fadeSlide class="question-wrapper">
+      <h2 class="question-text">ADDITIONAL OPTIONS</h2>
+
+      <div class="cards-grid" style="grid-template-columns:1fr 1fr; max-width:20rem; margin:auto;">
+        <label class="card" style="cursor:pointer; user-select:none;">
+          <input type="checkbox" [(ngModel)]="newFilter.low_cost" />
+          <div class="card-icon">💸</div>
+          <h3 class="card-title">Low Cost</h3>
+        </label>
+
+        <label class="card" style="cursor:pointer; user-select:none;">
+          <input type="checkbox" [(ngModel)]="newFilter.eco_travel" />
+          <div class="card-icon">🌱</div>
+          <h3 class="card-title">Eco Travel</h3>
+        </label>
+      </div>
+
+      <div class="input-group">
+        <input
+          type="text"
+          placeholder="Departure City…"
+          [(ngModel)]="newFilter.departure_city"
+        />
+      </div>
+
+      <button
+        class="cta-btn"
+        (click)="nextExtra()"
+        [disabled]="!newFilter.departure_city.trim()"
+      >
+        Continue
+      </button>
+      <button class="back-btn" (click)="back()">← Back</button>
+    </section>
+
+    <!-- Step 5: Enter Group Name -->
+    <section *ngIf="currentStep === 5" @fadeSlide class="question-wrapper">
+      <h2 class="question-text">ENTER A NAME FOR YOUR GROUP</h2>
+      <div class="input-group">
+        <input type="text"
+               placeholder="Group Name…"
+               [(ngModel)]="groupName"/>
+      </div>
+      <button
+        class="cta-btn"
+        [disabled]="
+          !groupName.trim() ||
+          !newFilter.departure_city.trim() ||
+          isCreating
+        "
+        (click)="createGroup()"
+      >
+        {{ isCreating ? 'Creating…' : 'Create Group' }}
+      </button>
+      <button class="back-btn" (click)="back()" [disabled]="isCreating">← Back</button>
+    </section>
+
+    <!-- Success -->
+    <section *ngIf="createSuccess" class="question-wrapper">
+      <h2 class="question-text">GROUP CREATED SUCCESSFULLY! 🎉</h2>
+    </section>
+
+  </main>
+
+</div>
+<app-footer></app-footer>

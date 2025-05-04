@@ -1,139 +1,138 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild } from '@angular/core';
-import { ChatService, Message } from '../../core/services/chat.service';
-import { AuthService }   from '../../core/services/auth.service';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ViewChild,
+  ChangeDetectorRef
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HeaderComponent } from '../../core/components/header/header.component';
-import { FooterComponent } from '../../core/components/footer/footer.component';
-import { CommonModule }   from '@angular/common';
-import { FormsModule }    from '@angular/forms';
-import {
-  ScrollingModule,
-  CdkVirtualScrollViewport
-} from '@angular/cdk/scrolling';
-import {
-  trigger, transition, style, animate, query, stagger
-} from '@angular/animations';
+import { ChatService, Message } from '../../core/services/chat.service';
+import { AuthService } from '../../core/services/auth.service';
+import {CdkFixedSizeVirtualScroll, CdkVirtualScrollViewport} from '@angular/cdk/scrolling';
+import {DatePipe, NgClass} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { WebSocketService } from '../../core/services/socket.service';
 
 @Component({
   selector: 'app-chat',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ScrollingModule,
-    HeaderComponent,
-    FooterComponent
-  ],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css'],
-  animations: [
-    trigger('listAnim', [
-      transition('* => *', [
-        query(':enter', [
-          style({ opacity: 0, transform: 'translateY(20px)' }),
-          stagger('50ms', [
-            animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
-          ])
-        ], { optional: true })
-      ])
-    ])
-  ]
+  standalone: true,
+  imports: [
+    CdkVirtualScrollViewport,
+    NgClass,
+    FormsModule,
+    DatePipe,
+    CdkFixedSizeVirtualScroll,
+    ScrollingModule,
+    WebSocketService
+  ],
 })
-export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ChatComponent implements OnInit, OnDestroy {
   @ViewChild(CdkVirtualScrollViewport) viewport!: CdkVirtualScrollViewport;
 
-  userId     = '';
-  groupId    = '';
-  chatId     = '';
+  userId = '';
+  groupId = '';
+  chatId = '';
   messages: Message[] = [];
   newMessage = '';
 
   constructor(
     private chatService: ChatService,
     private authService: AuthService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef,
+    private webSocketService: WebSocketService
   ) {}
+  private destroy$ = new Subject<void>();
 
   ngOnInit(): void {
-    const stored = this.authService.getUserId();
-    if (!stored) {
-      console.warn('No se encontró userId');
-      return;
-    }
-    this.userId = stored;
-    this.route.params.subscribe(p => {
-      this.groupId = p['groupId'];
-      this.initChat();
+    this.userId = this.authService.getUserId() ?? '';
+
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      this.groupId = params['groupId'];
+      if (this.groupId) {
+        this.startChat();
+      }
     });
   }
 
-  ngAfterViewInit(): void {
-    setTimeout(() => this.viewport.checkViewportSize());
-  }
 
-  private initChat(): void {
-    this.chatService.createChat(this.groupId).subscribe({
-      next: res => {
+  initChat(groupId: string) {
+    // Paso 1: Crear o recuperar el chat por groupId
+    this.chatService.createChat(groupId).subscribe({
+      next: (res: any) => {
         this.chatId = res.chat_id;
-        this.chatService.connect(this.chatId);
-        this.chatService.onMessage().subscribe(msg => {
-          this.messages.push(msg);
-          this.scrollToBottom();
+
+        // Paso 2: Obtener todos los mensajes del chat
+        this.chatService.getAllMessages({chat_id: this.chatId}).subscribe({
+          next: (response: any) => {
+            this.messages = response.messages || [];
+          },
+          error: (err) => {
+            console.error('Error al obtener mensajes:', err);
+          }
         });
-        this.loadMessages();
       },
-      error: err => console.error('Error iniciando el chat:', err)
+      error: (err) => {
+        console.error('Error al crear/obtener chat:', err);
+      }
     });
   }
 
-  private loadMessages(): void {
-    this.chatService.getAllMessages(this.chatId).subscribe({
-      next: all => {
-        this.messages = all;
-        setTimeout(() => this.scrollToBottom(true));
+  startChat(): void {
+    this.chatService.createChat(this.groupId).subscribe({
+      next: (res) => {
+        if (!res.id) {
+          console.error('❌ Error: res.id es inválido:', res);
+          return;
+        }
+        this.chatId = res.id;
+  
+        // Obtener mensajes ANTES de conectar WebSocket
+        this.loadMessages(() => {
+          this.chatService.connect(this.chatId);
+  
+          this.chatService.onMessage()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((msg) => {
+              this.messages.push(msg);
+              console.log('📩 Mensaje recibido del WebSocket:', msg);
+              this.cdr.detectChanges();
+            });
+        });
       },
-      error: err => console.error('Error cargando mensajes:', err)
+      error: (err) => console.error('Error creando chat:', err),
     });
   }
+  
+
+  loadMessages(callback?: () => void): void {
+    this.chatService.getAllMessages({ chat_id: this.chatId }).subscribe({
+      next: (msgs) => {
+        this.messages = msgs;
+        this.cdr.detectChanges();
+        setTimeout(() => {
+          callback?.();
+        }, 100);
+      }});
+  }
+  
 
   sendMessage(): void {
-    const text = this.newMessage.trim();
-    if (!text) return;
-
-    const temp: Message = {
-      id: crypto.randomUUID(),
-      chat_id: this.chatId,
-      sender_uid: this.userId,
-      message: text,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    };
-
-    this.chatService.sendMessage({
-      chat_id: this.chatId,
-      sender_uid: this.userId,
-      message: text
-    });
-
-    this.messages.push(temp);
+    const text = { type: 'message', data: this.newMessage.trim()}
+    this.webSocketService.sendMessage(text);
     this.newMessage = '';
-    setTimeout(() => this.scrollToBottom(true), 50);
   }
+  
 
-  scrollToBottom(force = false): void {
-    const count = this.messages.length;
-    if (!this.viewport) return;
-    if (force) {
-      this.viewport.scrollToIndex(count - 1, 'smooth');
-    } else {
-      const { start, end } = this.viewport.getRenderedRange();
-      if (count - 1 >= end - 1) {
-        this.viewport.scrollToIndex(count - 1, 'smooth');
-      }
-    }
-  }
 
   ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
     this.chatService.disconnect();
   }
 }
