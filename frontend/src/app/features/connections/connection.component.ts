@@ -243,12 +243,10 @@ export class ConnectionComponent implements OnInit, AfterViewInit {
     });
   }
 
-  /** Une al usuario al grupo, enviando también el filtro actual */
   joinGroup(groupId: string) {
     this.joiningGroupId = groupId;
     const me = this.authService.getUserId()!;
 
-    // Preparamos el payload:
     const usersTravelFilter = [ this.currentFilter ];
     const members = [ me ];
 

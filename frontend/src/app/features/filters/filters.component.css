@@ -182,7 +182,6 @@
   transform: scale(1);
 }
 
-/* Contenedor de los dots */
 .progress-dots {
   display: flex;
   justify-content: center;
@@ -194,7 +193,6 @@
   margin-bottom: 6rem;
 }
 
-/* Cada punto */
 .progress-dots li {
   width: 12px;
   height: 12px;
@@ -204,13 +202,11 @@
   transition: all 0.3s ease;
 }
 
-/* Ya superados */
 .progress-dots li.completed {
   background-color: #0770E3;
   border-color: #0770E3;
 }
 
-/* El actual */
 .progress-dots li.current {
   background-color: #fff;
   border-color: #0770E3;

@@ -51,8 +51,8 @@ import { GroupService, Group } from '../../core/services/group.service';
   ]
 })
 export class GroupComponent implements OnInit {
-  private myGroups: Group[] = [];  // Solo tus grupos
-  groups: Group[] = [];            // Lo que se muestra en pantalla
+  private myGroups: Group[] = [];
+  groups: Group[] = [];
   hoverState: Record<string,'rest'|'hover'> = {};
   searchControl = new FormControl('');
 
@@ -65,20 +65,17 @@ export class GroupComponent implements OnInit {
   ngOnInit() {
     const me = this.auth.getUserId()!;
 
-    // Paso 1: cargo solo los grupos donde el usuario participa
     this.svc.getGroupsByUser(me).subscribe(userGroups => {
       this.myGroups = userGroups;
       this.applyList(this.myGroups);
     });
 
-    // Configuro el buscador para filtrar solo tus grupos
     this.searchControl.valueChanges.pipe(
       debounceTime(200),
       distinctUntilChanged()
     ).subscribe(term => this.applyFilter(term || ''));
   }
 
-  /** Filtra únicamente tus grupos por nombre */
   private applyFilter(term: string) {
     const q = term.trim().toLowerCase();
     if (!q) {
@@ -91,7 +88,6 @@ export class GroupComponent implements OnInit {
     }
   }
 
-  /** Actualiza la lista y resetea hoverState */
   private applyList(arr: Group[]) {
     this.groups = arr;
     this.hoverState = {};
@@ -101,12 +97,10 @@ export class GroupComponent implements OnInit {
   onCardEnter(id: string) { this.hoverState[id] = 'hover'; }
   onCardLeave(id: string) { this.hoverState[id] = 'rest'; }
 
-  /** Navega al formulario para crear un nuevo grupo */
   goToCreate() {
     this.router.navigate(['/groups/new']);
   }
 
-  /** Navega al chat del grupo */
   goToChat(groupId: string) {
     this.router.navigate(['/users/chat/groups', groupId]);
   }

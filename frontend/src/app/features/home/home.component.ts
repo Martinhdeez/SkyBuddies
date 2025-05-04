@@ -5,6 +5,7 @@ import { HeaderComponent } from '../../core/components/header/header.component';
 import { FooterComponent } from '../../core/components/footer/footer.component';
 import { FormsModule } from '@angular/forms';
 import {NgIf} from '@angular/common';
+import {GroupService} from '../../core/services/group.service';
 
 @Component({
   selector: 'app-home',
@@ -35,7 +36,7 @@ import {NgIf} from '@angular/common';
 export class HomeComponent implements AfterViewInit {
   @ViewChild('flightPath') flightPath?: ElementRef<SVGPathElement>;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private groupService: GroupService) {}
 
   ngAfterViewInit(): void {
     if (!this.flightPath) {
@@ -55,13 +56,25 @@ export class HomeComponent implements AfterViewInit {
   };
   showGroupInput = true;
   groupCode = '';
+  joinError: string | null = null;
 
   onSelectSolo()        { this.router.navigate(['/filters']).then(r => console.log('Navigated:', r)); }
   onSelectAccompanied() { this.currentQuestion = 2; }
+  /** Comprueba si existe el grupo; si no, muestra error */
   onJoinGroup() {
-    if (this.groupCode.trim()) {
-      this.router.navigate(['/join-private'], {queryParams: {code: this.groupCode}}).then(r => console.log('Navigated:', r));
-     }
+    const code = this.groupCode.trim();
+    if (!code) return;
+    this.joinError = null;
+    this.groupService.getGroupByCode(code).subscribe({
+      next: () => {
+        // Si el endpoint devolvió 200, redirigimos
+        this.router.navigate(['/join'], { queryParams: { code } });
+      },
+      error: err => {
+        console.error('Group lookup failed', err);
+        this.joinError = 'Invalid group code. Please try again.';
+      }
+    });
   }
   onSelectPublic()      { this.router.navigate(['/connections']).then(r => console.log('Navigated:', r)); }
   setHover(card: 'solo'|'accompanied'|'private'|'public', state: 'rest' | 'hover') {

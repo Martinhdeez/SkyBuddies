@@ -59,7 +59,6 @@
 
   <main class="content">
 
-    <!-- Step 1: Alone vs Group -->
     <section *ngIf="currentStep === 1" @fadeSlide class="question-wrapper">
       <h2 class="question-text">DO YOU TRAVEL ALONE?</h2>
       <div class="cards-grid">
@@ -82,7 +81,6 @@
       </div>
     </section>
 
-    <!-- Step 2: Private vs Public -->
     <section *ngIf="currentStep === 2" @fadeSlide class="question-wrapper">
       <h2 class="question-text">PRIVATE OR PUBLIC GROUP?</h2>
       <div class="cards-grid">
@@ -106,7 +104,6 @@
       <button class="back-btn" (click)="back()">← Back</button>
     </section>
 
-    <!-- Step 3: Configure Each Option Group -->
     <section
       *ngIf="currentStep === 3"
       @fadeSlide
@@ -151,7 +148,6 @@
       </div>
     </section>
 
-    <!-- Step 4: Extra Options -->
     <section *ngIf="currentStep === 4" @fadeSlide class="question-wrapper">
       <h2 class="question-text">ADDITIONAL OPTIONS</h2>
 
@@ -187,7 +183,6 @@
       <button class="back-btn" (click)="back()">← Back</button>
     </section>
 
-    <!-- Step 5: Enter Group Name -->
     <section *ngIf="currentStep === 5" @fadeSlide class="question-wrapper">
       <h2 class="question-text">ENTER A NAME FOR YOUR GROUP</h2>
       <div class="input-group">
@@ -209,7 +204,6 @@
       <button class="back-btn" (click)="back()" [disabled]="isCreating">← Back</button>
     </section>
 
-    <!-- Success -->
     <section *ngIf="createSuccess" class="question-wrapper">
       <h2 class="question-text">GROUP CREATED SUCCESSFULLY! 🎉</h2>
       <p>Redirecting to your groups...</p>

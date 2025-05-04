@@ -17,6 +17,7 @@ import { FooterComponent }       from '../../core/components/footer/footer.compo
 import { FiltersService, Filter }      from '../../core/services/filters.service';
 import { RecommendationService, RecommendCitiesPayload } from '../../core/services/recomendation.service';
 import { AuthService }                 from '../../core/services/auth.service';
+import {GroupService} from '../../core/services/group.service';
 
 type StepType = 'text' | 'binary' | 'card' | 'options';
 interface Step   { type: StepType; cat: string }
@@ -28,12 +29,11 @@ interface Option { key: string;    label: string }
   imports: [
     CommonModule,
     FormsModule,
-    NgIf,
     HeaderComponent,
     FooterComponent
   ],
-  templateUrl: './filters.component.html',
-  styleUrls:   ['./filters.component.css'],
+  templateUrl: './join.component.html',
+  styleUrls:   ['./join.component.css'],
   animations: [
     trigger('fadeSlide', [
       transition(':enter', [
@@ -65,7 +65,7 @@ interface Option { key: string;    label: string }
     ])
   ]
 })
-export class FiltersComponent implements OnInit, AfterViewInit {
+export class JoinComponent implements OnInit, AfterViewInit {
   @ViewChild('flightPath') flightPath!: ElementRef<SVGPathElement>;
 
   steps: Step[] = [];
@@ -81,7 +81,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
   constructor(
     private filtersSvc: FiltersService,
-    private recSvc:     RecommendationService,
+    private groupService: GroupService,
     private authService: AuthService,
     private route:      ActivatedRoute,
     private router:     Router
@@ -195,69 +195,46 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     if (this.currentStep < this.steps.length - 1) {
       this.currentStep++;
     } else {
-      this.saveFilterAndRecommend();
+      this.joinGroupFromUrl();
     }
   }
 
-  private saveFilterAndRecommend() {
-    // actualizar timestamps y user_id
-    const now = new Date().toISOString();
-    this.currentFilter.updated_at = now;
-    this.currentFilter.date       = this.currentFilter.date || now;
-
-    // volcamos selecciones dinámicas
-    for (const cat of this.categories) {
-      for (const opt of this.options[cat]) {
-        (this.currentFilter as any)[cat][opt.key] =
-          this.filterSelections[`${cat}_${opt.key}`];
-      }
+  private joinGroupFromUrl() {
+    // 1) Leemos el código de la query string: /.../join?code=XYZ
+    const code = this.route.snapshot.queryParamMap.get('code')?.trim();
+    if (!code) {
+      console.error('No code provided in URL');
+      return;
     }
 
-    // guardamos o actualizamos
-    const op$ = this.isNew
-      ? this.filtersSvc.createFilter(this.currentFilter)
-      : this.filtersSvc.updateFilter(this.filterId!, this.currentFilter);
+    // 2) Llamamos al servicio para validar que existe un grupo con ese código
+    this.groupService.getGroupByCode(code).subscribe({
+      next: group => {
+        const groupId = group.id;
+        const me = this.authService.getUserId()!;
 
-    op$.subscribe({
-      next: f => {
-        // preparamos payload para recomendaciones
-        const payload: RecommendCitiesPayload = {
-          id:         f.id,
-          date:       f.date,
-          departure_city: f.departure_city,
-          user_id:    f.user_id,
-          climate:    f.climate,
-          food:       f.food,
-          weather:    f.weather,
-          activities: f.activities,
-          events:     f.events,
-          continents: f.continents,
-          entorno:    f.entorno,
-          low_cost:   f.low_cost,
-          eco_travel: f.eco_travel,
-          created_at: f.created_at,
-          updated_at: f.updated_at
-        };
-
-        this.recSvc.recommendCities(payload).subscribe({
-          next: recObj => {
-            // Imprimimos lo que viene del backend
-            console.log('✅ recObj (respuesta recommendCities):', recObj);
-            // Preparamos el objeto de estado
-            const navState = {
-              recommended: recObj.recommended_cities,
-              departure_city: f.departure_city,
-            };
-            // Imprimimos el state que vamos a enviar
-            console.log('➡️ Navegando a /recommendations con state:', navState);
-
-            // Redirigimos pasando el state
-            this.router.navigate(['/recommendations'], { state: navState });
-          },
-          error: err => console.error('Error en recomendaciones', err)
-        });
+        // 3) Nos añadimos al grupo, pasando además el filtro actual si el endpoint lo requiere
+        this.groupService
+          .addMembers(
+            groupId,
+            [ this.currentFilter ], // users_travel_filter
+            [ me ]
+          )
+          .subscribe({
+            next: () => {
+              // 4) Navegamos al chat del grupo
+              this.router.navigate(['/users/chat/groups', groupId]);
+            },
+            error: err => {
+              console.error('Error joining group', err);
+              // Aquí podrías mostrar un mensaje de error al usuario
+            }
+          });
       },
-      error: e => console.error('Error guardando filtro', e)
+      error: err => {
+        console.error('Invalid group code:', err);
+        // Mostrar mensaje de "código inválido"
+      }
     });
   }
 }
