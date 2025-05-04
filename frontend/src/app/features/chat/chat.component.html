@@ -1,38 +1,45 @@
 <app-header></app-header>
 
-<div class="chat-container">
-  <div class="chat-wrapper">
-    <!-- Botón de retroceso -->
+<div class="chat">
+  <div class="chat__card">
+    <!-- cabecera -->
+    <header class="chat__header">
+      <button class="chat__back-btn" aria-label="Back" (click)="goBack()">⬅</button>
+      <h1 class="chat__title">Group Chat</h1>
+    </header>
 
-    <div class="chat-box">
-      <button class="btn-back" (click)="goBack()">⬅️ Back</button>
-
-      <div class="chat-header">Group Chat</div>
-
-      <cdk-virtual-scroll-viewport
-        class="messages-viewport"
-        itemSize="80"
+    <!-- lista de mensajes -->
+    <cdk-virtual-scroll-viewport
+      class="chat__viewport"
+      itemSize="80"
+    >
+      <div
+        *ngFor="let msg of messages"
+        class="msg"
+        [ngClass]="msg.sender_uid === userId ? 'msg--sent' : 'msg--recv'"
       >
-        <div
-          *ngFor="let msg of messages"
-          class="message-bubble"
-          [ngClass]="msg.sender_uid === userId ? 'sent' : 'received'"
-        >
-          <div class="message-content">{{ msg.message }}</div>
-        </div>
-      </cdk-virtual-scroll-viewport>
-
-      <div class="input-container">
-        <input
-          type="text"
-          [(ngModel)]="newMessage"
-          (keydown.enter)="sendMessage()"
-          placeholder="Type a message..."
-        />
-        <button (click)="sendMessage()">Send</button>
+        <p class="msg__text">{{ msg.message }}</p>
       </div>
-    </div>
+    </cdk-virtual-scroll-viewport>
+
+    <!-- input -->
+    <footer class="chat__input-bar">
+      <input
+        type="text"
+        class="chat__input"
+        placeholder="Type a message..."
+        [(ngModel)]="newMessage"
+        (keydown.enter)="sendMessage()"
+        aria-label="Message"
+      />
+      <button class="chat__send-btn" (click)="sendMessage()" aria-label="Send">Send</button>
+    </footer>
   </div>
 </div>
+
+<!-- waves decorativas -->
+<div class="wave"></div>
+<div class="wave"></div>
+<div class="wave"></div>
 
 <app-footer></app-footer>

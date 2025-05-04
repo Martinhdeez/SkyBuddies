@@ -71,7 +71,8 @@ export class AuthService {
    * @param http The HttpClient service.
    *           Used to make HTTP requests.
    */
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   /**
    * Register a new user.
@@ -152,6 +153,24 @@ export class AuthService {
     try {
       const decodedToken: any = jwtDecode(token);
       return decodedToken.id || null;
+    } catch (error) {
+      console.error('Error al decodificar el token', error);
+      return null;
+    }
+  }
+
+  /**
+   * Gets the username from the token.
+   * If the token is not found, returns null.
+   */
+  getUsername(): string | null {
+    const token = this.getToken();
+    if (!token) {
+      return null;
+    }
+    try {
+      const decodedToken: any = jwtDecode(token);
+      return decodedToken.username || null;
     } catch (error) {
       console.error('Error al decodificar el token', error);
       return null;
