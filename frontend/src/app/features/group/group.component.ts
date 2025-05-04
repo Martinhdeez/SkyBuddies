@@ -1,4 +1,4 @@
-// src/app/features/group/group.component.ts
+// src/app/features/group/new-group.component.ts
 import {
   Component,
   OnInit
@@ -40,8 +40,7 @@ import { catchError } from 'rxjs/operators';
         query('.group-card', [
           style({ opacity: 0, transform: 'translateY(20px)' }),
           stagger(80, [
-            animate('300ms ease-out',
-              style({ opacity: 1, transform: 'translateY(0)' }))
+            animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
           ])
         ], { optional: true })
       ])
@@ -54,11 +53,11 @@ import { catchError } from 'rxjs/operators';
   ]
 })
 export class GroupComponent implements OnInit {
-  private myGroups: Group[] = [];
+  private userPrivateGroups: Group[] = [];
   groups: Group[] = [];
   hoverState: Record<string,'rest'|'hover'> = {};
   searchControl = new FormControl('');
-  
+
   visibleParticipants: Record<string, boolean> = {};
   participants: Record<string, User[]> = {};
 
@@ -70,11 +69,15 @@ export class GroupComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+
     const me = this.auth.getUserId()!;
 
-    this.svc.getGroupsByUser(me).subscribe(userGroups => {
-      this.myGroups = userGroups;
-      this.applyList(this.myGroups);
+    this.svc.getGroups().subscribe(all => {
+      this.userPrivateGroups = all.filter(g =>
+        g.visibility === 'private' &&
+        g.members.includes(me)
+      );
+      this.applyList(this.userPrivateGroups);
     });
 
     this.searchControl.valueChanges.pipe(
@@ -83,18 +86,20 @@ export class GroupComponent implements OnInit {
     ).subscribe(term => this.applyFilter(term || ''));
   }
 
+  /** Sin término → privados. Con término → busca y filtra solo públicos */
   private applyFilter(term: string) {
     const q = term.trim().toLowerCase();
     if (!q) {
-      this.applyList(this.myGroups);
+      this.applyList(this.userPrivateGroups);
     } else {
-      const filtered = this.myGroups.filter(g =>
-        g.name.toLowerCase().includes(q)
-      );
-      this.applyList(filtered);
+      this.svc.searchGroups(q, 20).subscribe(list => {
+        const pubs = list.filter(g => g.visibility === 'public');
+        this.applyList(pubs);
+      });
     }
   }
 
+  /** Actualiza la vista y el estado hover */
   private applyList(arr: Group[]) {
     this.groups = arr;
     this.hoverState = {};
@@ -104,6 +109,7 @@ export class GroupComponent implements OnInit {
   onCardEnter(id: string) { this.hoverState[id] = 'hover'; }
   onCardLeave(id: string) { this.hoverState[id] = 'rest'; }
 
+  /** Navega al formulario "nuevo grupo" en otra página */
   goToCreate() {
     this.router.navigate(['/groups/new']);
   }
@@ -114,24 +120,24 @@ export class GroupComponent implements OnInit {
 
   showParticipants(groupId: string) {
     this.visibleParticipants[groupId] = true;
-  
+
     if (!this.participants[groupId]) {
       const group = this.groups.find(g => g.id === groupId);
       if (group) {
         const requests = group.members.map(uid =>
           this.userService.getUserById(uid).pipe(catchError(() => of(null)))
         );
-  
+
         forkJoin(requests).subscribe(users => {
           this.participants[groupId] = users.filter(u => u !== null) as User[];
         });
       }
     }
   }
-  
+
   hideParticipants(groupId: string) {
     this.visibleParticipants[groupId] = false;
   }
-  
-  
+
+
 }
