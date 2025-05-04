@@ -1,4 +1,4 @@
-// src/app/features/group/new-group.component.ts
+// src/app/features/group/group.component.ts
 import {
   Component,
   OnInit
@@ -37,7 +37,8 @@ import { GroupService, Group } from '../../core/services/group.service';
         query('.group-card', [
           style({ opacity: 0, transform: 'translateY(20px)' }),
           stagger(80, [
-            animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+            animate('300ms ease-out',
+              style({ opacity: 1, transform: 'translateY(0)' }))
           ])
         ], { optional: true })
       ])
@@ -50,49 +51,47 @@ import { GroupService, Group } from '../../core/services/group.service';
   ]
 })
 export class GroupComponent implements OnInit {
-  private userPrivateGroups: Group[] = [];
-  groups: Group[] = [];
+  private myGroups: Group[] = [];  // Solo tus grupos
+  groups: Group[] = [];            // Lo que se muestra en pantalla
   hoverState: Record<string,'rest'|'hover'> = {};
   searchControl = new FormControl('');
 
   constructor(
-    private svc:    GroupService,
-    private auth:   AuthService,
+    private svc: GroupService,
+    private auth: AuthService,
     private router: Router
   ) {}
 
   ngOnInit() {
-
     const me = this.auth.getUserId()!;
 
-    this.svc.getGroups().subscribe(all => {
-      this.userPrivateGroups = all.filter(g =>
-        g.visibility === 'private' &&
-        g.members.includes(me)
-      );
-      this.applyList(this.userPrivateGroups);
+    // Paso 1: cargo solo los grupos donde el usuario participa
+    this.svc.getGroupsByUser(me).subscribe(userGroups => {
+      this.myGroups = userGroups;
+      this.applyList(this.myGroups);
     });
 
+    // Configuro el buscador para filtrar solo tus grupos
     this.searchControl.valueChanges.pipe(
       debounceTime(200),
       distinctUntilChanged()
     ).subscribe(term => this.applyFilter(term || ''));
   }
 
-  /** Sin término → privados. Con término → busca y filtra solo públicos */
+  /** Filtra únicamente tus grupos por nombre */
   private applyFilter(term: string) {
     const q = term.trim().toLowerCase();
     if (!q) {
-      this.applyList(this.userPrivateGroups);
+      this.applyList(this.myGroups);
     } else {
-      this.svc.searchGroups(q, 20).subscribe(list => {
-        const pubs = list.filter(g => g.visibility === 'public');
-        this.applyList(pubs);
-      });
+      const filtered = this.myGroups.filter(g =>
+        g.name.toLowerCase().includes(q)
+      );
+      this.applyList(filtered);
     }
   }
 
-  /** Actualiza la vista y el estado hover */
+  /** Actualiza la lista y resetea hoverState */
   private applyList(arr: Group[]) {
     this.groups = arr;
     this.hoverState = {};
@@ -102,11 +101,12 @@ export class GroupComponent implements OnInit {
   onCardEnter(id: string) { this.hoverState[id] = 'hover'; }
   onCardLeave(id: string) { this.hoverState[id] = 'rest'; }
 
-  /** Navega al formulario "nuevo grupo" en otra página */
+  /** Navega al formulario para crear un nuevo grupo */
   goToCreate() {
     this.router.navigate(['/groups/new']);
   }
 
+  /** Navega al chat del grupo */
   goToChat(groupId: string) {
     this.router.navigate(['/users/chat/groups', groupId]);
   }

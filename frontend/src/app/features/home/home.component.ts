@@ -63,7 +63,7 @@ export class HomeComponent implements AfterViewInit {
       this.router.navigate(['/join-private'], {queryParams: {code: this.groupCode}}).then(r => console.log('Navigated:', r));
      }
   }
-  onSelectPublic()      { this.router.navigate(['/public-groups']).then(r => console.log('Navigated:', r)); }
+  onSelectPublic()      { this.router.navigate(['/connections']).then(r => console.log('Navigated:', r)); }
   setHover(card: 'solo'|'accompanied'|'private'|'public', state: 'rest' | 'hover') {
     this.hoverState[card] = state;
   }

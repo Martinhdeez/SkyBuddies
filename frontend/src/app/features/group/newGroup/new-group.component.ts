@@ -14,7 +14,7 @@ import {
   animate,
   state
 } from '@angular/animations';
-import { Router } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import { Filter, FiltersService } from '../../../core/services/filters.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { GroupService } from '../../../core/services/group.service';
@@ -168,7 +168,7 @@ const FILTER_GROUPS: FilterGroup[] = [
     CommonModule,
     FormsModule,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
   ],
   templateUrl: './new-group.component.html',
   styleUrls: ['./new-group.component.css'],
@@ -394,7 +394,14 @@ export class NewGroupComponent implements OnInit, AfterViewInit {
     };
 
     this.groupsSvc.createGroup(payload).subscribe({
-      next: () => this.createSuccess = true,
+      next: () => {
+        this.createSuccess = true;
+
+        // Redirige automáticamente después de 3 segundos
+        setTimeout(() => {
+          this.router.navigate(['/groups']);
+        }, 3000);
+      },
       error: err => {
         console.error('Error creando grupo', err);
         this.isCreating = false;
