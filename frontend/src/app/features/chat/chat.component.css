@@ -126,6 +126,26 @@ app-footer {
   transform: translateY(-2px);
 }
 
+.btn-back {
+  background-color: #0770E3;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  max-width: 6em;
+  margin-top: 2em;
+  margin-left: 1em;
+}
+
+.btn-back:hover {
+  background-color: #055bb5;
+  transform: translateY(-2px);
+}
+
+
 @keyframes fadeIn {
   from {
     opacity: 0;

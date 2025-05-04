@@ -9,13 +9,16 @@ import {
 import { ActivatedRoute } from '@angular/router';
 import { ChatService, Message } from '../../core/services/chat.service';
 import { AuthService } from '../../core/services/auth.service';
-import {CdkFixedSizeVirtualScroll, CdkVirtualScrollViewport} from '@angular/cdk/scrolling';
-import {DatePipe, NgClass} from '@angular/common';
-import {FormsModule} from '@angular/forms';
+import { Location } from '@angular/common'; // <-- Importa Location
+import { CdkFixedSizeVirtualScroll, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { DatePipe, NgClass } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
+import { HeaderComponent } from '../../core/components/header/header.component';
+import { FooterComponent } from '../../core/components/footer/footer.component';
 
 @Component({
   selector: 'app-chat',
@@ -29,7 +32,9 @@ import { CommonModule } from '@angular/common';
     DatePipe,
     CdkFixedSizeVirtualScroll,
     ScrollingModule,
-    CommonModule
+    CommonModule,
+    HeaderComponent,
+    FooterComponent,
   ],
 })
 export class ChatComponent implements OnInit, OnDestroy {
@@ -48,6 +53,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
+    private location: Location // <-- Inyecta Location
   ) {}
 
   ngOnInit(): void {
@@ -61,10 +67,9 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   initChat(): void {
-    // Crear o recuperar chat por groupId
     this.chatService.createChat(this.groupId).subscribe({
       next: (res) => {
-        this.chatId = res.id;        // Conectar WebSocket solo después de obtener el chat y mensajes
+        this.chatId = res.id;
       },
       error: (err) => {
         console.error('Error al crear/obtener chat:', err);
@@ -72,16 +77,12 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
   }
 
-  generateMessageId(): string {
-    return `${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-  }  
-
   sendMessage(): void {
     const messageData = {
-      sender_uid: this.userId, 
-      message: this.newMessage, 
-      chat_id: this.chatId,          
-    };  
+      sender_uid: this.userId,
+      message: this.newMessage,
+      chat_id: this.chatId,
+    };
     this.chatService.sendMessage(messageData).subscribe(
       (response) => {
         console.log('Mensaje enviado correctamente:', response);
@@ -90,11 +91,15 @@ export class ChatComponent implements OnInit, OnDestroy {
         console.error('Error al enviar el mensaje:', error);
       }
     );
-    this.newMessage = ''; 
+    this.newMessage = '';
+  }
+
+  // Método para retroceder a la página anterior
+  goBack(): void {
+    this.location.back(); // Esto retrocede en el historial del navegador
   }
 
   ngOnDestroy(): void {
-    // Unsubscribe de todos los observables al destruir el componente
     this.destroy$.next();
     this.destroy$.complete();
   }

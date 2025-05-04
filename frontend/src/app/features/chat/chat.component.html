@@ -1,6 +1,12 @@
+<app-header></app-header>
+
 <div class="chat-container">
   <div class="chat-wrapper">
+    <!-- Botón de retroceso -->
+
     <div class="chat-box">
+      <button class="btn-back" (click)="goBack()">⬅️ Back</button>
+
       <div class="chat-header">Group Chat</div>
 
       <cdk-virtual-scroll-viewport
@@ -28,3 +34,5 @@
     </div>
   </div>
 </div>
+
+<app-footer></app-footer>
