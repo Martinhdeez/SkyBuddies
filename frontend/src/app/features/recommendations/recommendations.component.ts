@@ -8,7 +8,7 @@ import { HeaderComponent } from '../../core/components/header/header.component';
 import { FooterComponent } from '../../core/components/footer/footer.component';
 import { CommonModule, NgForOf } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import {RecommendationService} from '../../core/services/recomendation.service';
+import {PlacesResponse, RecommendationService} from '../../core/services/recomendation.service';
 
 @Component({
   selector: 'app-recommendations',
@@ -42,11 +42,13 @@ import {RecommendationService} from '../../core/services/recomendation.service';
   ]
 })
 export class RecommendationsComponent implements OnInit {
-  recommendations: string[] = [];
-  hoverState: Record<string,'rest'|'hover'> = {};
-  placesMap: Record<string,{ recommended_places: string[]; photos: string[] }> = {};
-  loadingMap: Record<string, boolean> = {};
-  errorMap: Record<string, boolean> = {};
+  private allCities: string[] = [];
+  // guardamos sólo las respuestas válidas
+  responses: Array<{ city: string; data: PlacesResponse }> = [];
+  currentIndex = 0;
+
+  loadingCount = 0;    // cuántas peticiones están activas
+  anyError = false;    // si alguna falló
 
   constructor(
     private router: Router,
@@ -56,36 +58,41 @@ export class RecommendationsComponent implements OnInit {
   ngOnInit() {
     const state = history.state as any;
     if (Array.isArray(state.recommended)) {
-      this.recommendations = state.recommended;
-    }
-    for (const city of this.recommendations) {
-      this.hoverState[city] = 'rest';
-      this.fetchPlaces(city);
+      this.allCities = state.recommended;
+      this.fetchAllPlaces();
     }
   }
 
-  setHover(city: string, state: 'rest'|'hover') {
-    this.hoverState[city] = state;
+  private fetchAllPlaces() {
+    this.loadingCount = this.allCities.length;
+    for (const city of this.allCities) {
+      this.recommendationService.getPlaces(city)
+        .subscribe({
+          next: resp => {
+            this.responses.push({ city, data: resp });
+          },
+          error: () => {
+            console.warn(`Error cargando lugares para ${city}`);
+            this.anyError = true;
+          },
+          complete: () => {
+            this.loadingCount--;
+          }
+        });
+    }
   }
 
-  private fetchPlaces(city: string) {
-    this.loadingMap[city] = true;
-    this.errorMap[city] = false;
+  // avanzar al siguiente (si existe)
+  next() {
+    if (this.currentIndex < this.responses.length - 1) {
+      this.currentIndex++;
+    }
+  }
 
-    this.recommendationService.getPlaces(city)
-      .subscribe({
-        next: resp => {
-          this.placesMap[city] = {
-            recommended_places: resp.recommended_places,
-            photos: resp.photos
-          };
-          this.loadingMap[city] = false;
-        },
-        error: err => {
-          console.error(`Error al cargar lugares para ${city}`, err);
-          this.errorMap[city] = true;
-          this.loadingMap[city] = false;
-        }
-      });
+  // retroceder
+  prev() {
+    if (this.currentIndex > 0) {
+      this.currentIndex--;
+    }
   }
 }

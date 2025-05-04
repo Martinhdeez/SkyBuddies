@@ -1,52 +1,53 @@
 <!-- recommendations.component.html -->
+<app-header></app-header>
+
 <div class="recommendations-page">
-  <app-header></app-header>
 
-  <main class="content" @listAnim>
-    <h1 class="title">Recommended Cities</h1>
-    <div class="countries-grid">
-      <!-- Sólo iteramos las que no fallaron -->
-      <div
-        *ngFor="let city of recommendations"
-        class="country-card"
-        [@cardHover]="hoverState[city]"
-        (mouseenter)="setHover(city,'hover')"
-        (mouseleave)="setHover(city,'rest')"
-      >
-        <h2>{{ city }}</h2>
+  <main class="content">
 
-        <!-- Cargando -->
-        <p *ngIf="loadingMap[city]">Cargando lugares…</p>
+    <p *ngIf="loadingCount === 0 && responses.length === 0" class="no-results">
+      No hay recomendaciones disponibles.
+    </p>
 
-        <!-- En caso de éxito: lista + fotos -->
-        <ng-container *ngIf="placesMap[city] && !loadingMap[city]">
-          <section class="places">
-            <h3>Lugares recomendados:</h3>
-            <ul>
-              <li *ngFor="let place of placesMap[city].recommended_places">
-                {{ place }}
-              </li>
-            </ul>
-          </section>
-          <section class="photos">
-            <h3>Fotos:</h3>
-            <div class="photos-grid">
-              <img
-                *ngFor="let url of placesMap[city].photos"
-                [src]="url"
-                [alt]="'Foto de ' + city"
-              />
-            </div>
-          </section>
-        </ng-container>
+    <div *ngIf="responses.length > 0" class="card-wrapper">
+      <div class="country-card">
+        <h1 class="title">RECOMMENDED CITIES:</h1>
+        <h2 class="city">{{ responses[currentIndex].city }}</h2>
+
+        <div class="section places">
+          <h3>Lugares recomendados</h3>
+          <ul>
+            <li *ngFor="let place of responses[currentIndex].data.recommended_places">
+              {{ place }}
+            </li>
+          </ul>
+        </div>
+
+        <div class="section photos">
+          <h3>Galería</h3>
+          <div class="photos-grid">
+            <img
+              *ngFor="let url of responses[currentIndex].data.photos"
+              [src]="url"
+              [alt]="'Foto de ' + responses[currentIndex].city"
+            />
+          </div>
+        </div>
       </div>
     </div>
 
+    <div class="pager" *ngIf="responses.length > 1">
+      <button class="btn-nav" (click)="prev()" [disabled]="currentIndex===0">←</button>
+      <span class="page-indicator">{{ currentIndex + 1 }} / {{ responses.length }}</span>
+      <button class="btn-nav" (click)="next()" [disabled]="currentIndex===responses.length-1">→</button>
+    </div>
+
     <div class="actions">
-      <button class="btn" routerLink="/filters">Modify Filters</button>
-      <button class="btn" routerLink="/groups">View Groups</button>
+      <button class="btn" routerLink="/filters">Modificar filtros</button>
+      <button class="btn" routerLink="/groups">Ver grupos</button>
     </div>
   </main>
 
-  <app-footer></app-footer>
 </div>
+
+<app-footer></app-footer>
